@@ -6,10 +6,10 @@ import time
 
 def main():
     host = '127.0.0.1'
-    cPort = 8888
+    cPort = 8080
 
     s = socket.socket()
-    s.connect((host,port))
+    s.bind((host,cPort))
     s.listen(5) 
 
     while True:

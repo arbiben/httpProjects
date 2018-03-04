@@ -12,7 +12,7 @@ def main():
     serv = socket.socket()
     serv.connect((host, cPort))
     print("conneted to server - boom!")
-
+    serv.send('GET / HTTP/1.1')
     s = socket.socket()
     s.bind((host, sPort))
     s.listen(5) 
