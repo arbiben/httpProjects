@@ -5,9 +5,9 @@ import select
 import time
 
 def main():
-    host = '127.0.0.1'
+    host = '3.0.0.1'
     sPort = 8000
-    cPort = 8888
+    cPort = 8080
 
     serv = socket.socket()
     serv.connect((host, cPort))
