@@ -6,7 +6,7 @@ import time
 
 def main():
     #host = '127.0.0.1'
-     host = '3.0.0.1'
+    host = '3.0.0.1'
     sPort = 8000
     cPort = 8080
 
@@ -37,9 +37,9 @@ def on_new_client(serversocket, clientsocket, addr):
     
         while msg:
             for line in msg.splitlines():
-                if "" in line:
-                    print("found it!!=======")
-                    
+                if "length" in line:
+                    print("found it = " + line)
+
             clientsocket.send(msg)
             msg = serversocket.recv(1024)
         print("=====================================================================================================")
