@@ -42,7 +42,7 @@ def on_new_client(serversocket, clientsocket, addr):
 
             clientsocket.send(msg)
             msg = serversocket.recv(1024)
-        print("=====================================================================================================")
+
 
     print("closed socket with "+str(addr))
     clientsocket.close()
