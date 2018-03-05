@@ -10,7 +10,7 @@ def main():
     sPort = 8000
     cPort = 8080
 
-    serv = socket.socketcd()
+    serv = socket.socket()
     serv.connect((host, cPort))
     print("conneted to server \n")
 
