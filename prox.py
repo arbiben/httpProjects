@@ -34,11 +34,12 @@ def on_new_client(serversocket, clientsocket, addr):
             break
         serversocket.send(msg)
         msg = serversocket.recv(1024)
-        for line in msg.splitlines():
-            if "" in line:
-                print("found it!!=======")
+    
         while msg:
-            print(msg)
+            for line in msg.splitlines():
+                if "" in line:
+                    print("found it!!=======")
+                    
             clientsocket.send(msg)
             msg = serversocket.recv(1024)
         print("=====================================================================================================")
