@@ -5,17 +5,18 @@ import select
 import time
 
 def main():
-    host = '3.0.0.1'
+    #host = '127.0.0.1'
+     host = '3.0.0.1'
     sPort = 8000
     cPort = 8080
 
-    serv = socket.socket()
+    serv = socket.socketcd()
     serv.connect((host, cPort))
     print("conneted to server \n")
 
     s = socket.socket()
     s.bind((host, sPort))
-    s.listen(5) 
+    s.listen(5)
 
     while True:
         c, addr = s.accept()
@@ -25,14 +26,17 @@ def main():
     serv.close()
 
 def on_new_client(serversocket, clientsocket, addr):
-    while True: 
+    while True:
         msg = clientsocket.recv(1024)
-        
+
         print("from client >> " + msg)
         if not msg:
             break
         serversocket.send(msg)
         msg = serversocket.recv(1024)
+        for line in msg.splitlines():
+            if "" in line:
+                print("found it!!=======")
         while msg:
             print(msg)
             clientsocket.send(msg)
@@ -41,7 +45,7 @@ def on_new_client(serversocket, clientsocket, addr):
 
     print("closed socket with "+str(addr))
     clientsocket.close()
-    
-        
+
+
 if __name__=="__main__":
     main()
