@@ -37,7 +37,7 @@ def on_new_client(serversocket, clientsocket, addr):
     
         while msg:
             for line in msg.splitlines():
-                if "length" in line:
+                if "Content-Length:" in line:
                     print("found it = " + line)
 
             clientsocket.send(msg)
