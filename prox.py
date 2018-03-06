@@ -26,16 +26,12 @@ def main():
     serv.close()
 
 def on_new_client(serversocket, clientsocket, addr):
-    while True:
-        buff = 1024
-        msg = clientsocket.recv(buff) # GET
-        
-        if not msg:
-            print("closed in \"not\" clause "+str(addr))
-            clientsocket.close()
-            return
-
-        serversocket.send(msg)        # send to server
+    
+    buff = 1024
+    msg = clientsocket.recv(buff) # GET
+    serversocket.send(msg)        # send to server
+    
+    while True:    
         msg = serversocket.recv(buff) # from server
 
         if not msg:
