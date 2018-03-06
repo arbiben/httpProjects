@@ -39,17 +39,13 @@ def on_new_client(serversocket, clientsocket, addr):
     fileSize = 0
     count = 0
     start = False
-    OK = True
     for line in msg.splitlines():
-        if OK:
-            print(line)
-
+        print(line)
         if start:
             count+= len(line)
 
         elif not line.strip():
             start = True
-            OK = False
             print("=========     header     ============")
 
         elif "Content-Length:" in line:
