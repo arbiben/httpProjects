@@ -49,7 +49,7 @@ def on_new_client(serversocket, clientsocket, addr):
         fileSize = msg[idx: last]
         idx = msg.find("\r\n\r\n") + 4
         count = len(msg) - idx
-
+        print(str(count)+"-----------------------")
         clientsocket.send(msg)
 
         diff = fileSize - count
