@@ -38,27 +38,21 @@ def on_new_client(serversocket, clientsocket, addr):
 
     fileSize = 0
     count = 0
-    header = 0
     start = False # passed header
 
     for line in msg.splitlines():
         print(line)
-        count+=len(line)
-        
-        if not start:
-            header+=len(line)
+    
+        if start:
+            count+=len(line)+1
 
         elif not line.strip():
             start = True
-            header+= len(line)
 
         elif "Content-Length:" in line:
             fileSize = int(line[16:])
-            header+= len(line)
 
-    print("header is: " + str(header))
-    print("all is: "+str(count))
-    count = count - header
+    print("count is: "+str(count))
 
     clientsocket.send(msg)
 
@@ -70,11 +64,9 @@ def on_new_client(serversocket, clientsocket, addr):
     while count<fileSize:
         msg = serversocket.recv(buff)
         clientsocket.send(msg)
-        
-        for line in msg.splitlines():
-            count += len(msg)
-            temp += len(msg)
 
+        count+= len(msg)
+        
         diff = fileSize - count
         if diff < buff:
             buff = diff
