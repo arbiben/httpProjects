@@ -29,50 +29,48 @@ def on_new_client(serversocket, clientsocket, addr):
     
     buff = 1024
     msg = clientsocket.recv(buff) # GET
-    serversocket.send(msg)        # send to server
+    serversocket.send(msg)        # send to server    
+    msg = serversocket.recv(buff) # from server
+
+    if not msg:
+        print("closed in \"not\" clause "+str(addr))
+        clientsocket.close()
+        return
+
+    fileSize = 0
+    count = 0
+    start = False # passed header
+
+    for line in msg.splitlines():
+        if not start:
+            print(line)
     
-    while True:    
-        msg = serversocket.recv(buff) # from server
+        if start:
+            count+=len(line)+1
 
-        if not msg:
-            print("closed in \"not\" clause "+str(addr))
-            clientsocket.close()
-            return
+        elif not line.strip():
+            start = True
 
-        fileSize = 0
-        count = 0
-        start = False # passed header
+        elif "Content-Length:" in line:
+            fileSize = int(line[16:])
 
-        for line in msg.splitlines():
-            if not start:
-                print(line)
-        
-            if start:
-                count+=len(line)+1
+    
+    clientsocket.send(msg)
 
-            elif not line.strip():
-                start = True
+    diff = fileSize - count
+    if diff < buff:
+        buff = diff
 
-            elif "Content-Length:" in line:
-                fileSize = int(line[16:])
-
-        
+    
+    while count<fileSize:
+        msg = serversocket.recv(buff)
         clientsocket.send(msg)
+
+        count+= len(msg)
 
         diff = fileSize - count
         if diff < buff:
             buff = diff
-
-        
-        while count<fileSize:
-            msg = serversocket.recv(buff)
-            clientsocket.send(msg)
-
-            count+= len(msg)
-
-            diff = fileSize - count
-            if diff < buff:
-                buff = diff
 
     print("closed socket with "+str(addr))
     clientsocket.close()
