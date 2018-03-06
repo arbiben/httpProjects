@@ -58,7 +58,7 @@ def on_new_client(serversocket, clientsocket, addr):
             buff = diff
         
         while diff>0:
-            msg = serversocket.recv(buff)
+            # msg = serversocket.recv(buff)
             print(msg)
             clientsocket.send(msg)
             count+= len(msg)
