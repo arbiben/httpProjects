@@ -65,9 +65,9 @@ def on_new_client(serversocket, clientsocket, addr):
             temp+= len(line)
             header+= len(line)
 
-    print("header is: " + header)
+    print("header is: " + str(header))
     print("the rest is: " + str(count))
-    print("all is: "+temp)
+    print("all is: "+str(temp))
 
     clientsocket.send(msg)
 
