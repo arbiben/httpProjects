@@ -34,16 +34,17 @@ def on_new_client(serversocket, clientsocket, addr):
     while True:
         buff = 1024
         msg = clientsocket.recv(buff) # GET
-        # print("client >> " + msg)
+        print("------------------- client -------------------\n" + msg)
+        print("------------------- client -------------------")
         serversocket.send(msg)        # send to server    
         msg = serversocket.recv(buff) # from server
         
         if not msg:
-            print("closed in \"not\" clause "+str(addr))
+            print("closed in \"not\" SERVER clause "+str(addr))
             clientsocket.close()
             return
 
-        # print("server >> " + msg)
+        print("server >> " + msg)
         idx = msg.find("Content-Length:") + 16
         last = msg.find("\r\n", idx)
         fileSize = int(msg[idx: last].strip())
@@ -58,14 +59,16 @@ def on_new_client(serversocket, clientsocket, addr):
         
         while diff>0:
             msg = serversocket.recv(buff)
-            # print(msg)
+            print(msg)
             clientsocket.send(msg)
             count+= len(msg)
 
             diff = fileSize - count
             if diff < buff:
                 buff = diff
-
+        
+        print("-------------  out of loop  -------------")
+    
     print("closed socket with "+str(addr))
     clientsocket.close()
 
