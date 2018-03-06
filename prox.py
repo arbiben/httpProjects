@@ -29,6 +29,7 @@ def on_new_client(serversocket, clientsocket, addr):
     
     buff = 1024
     msg = clientsocket.recv(buff) # GET
+    print(msg+"\n\n")
     serversocket.send(msg)        # send to server    
     msg = serversocket.recv(buff) # from server
 
