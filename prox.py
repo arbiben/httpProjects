@@ -65,6 +65,7 @@ def on_new_client(serversocket, clientsocket, addr):
 
         
         while count<fileSize:
+            print("countint " + str(diff) + " out of " + str(fileSize))
             msg = serversocket.recv(buff)
             print(msg)
             clientsocket.send(msg)
