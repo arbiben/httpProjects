@@ -65,8 +65,8 @@ def on_new_client(serversocket, clientsocket, addr):
 
         
         while count<fileSize:
-            print(msg)
             msg = serversocket.recv(buff)
+            print(msg)
             clientsocket.send(msg)
             count+= len(msg)
 
