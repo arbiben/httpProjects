@@ -32,22 +32,32 @@ def on_new_client(serversocket, clientsocket, addr):
         print("from client >> " + msg)
         if not msg:
             break
+        
         serversocket.send(msg)
         msg = serversocket.recv(1024)
-    
-        while msg:
-            conLen = -1
-            count = 0
+        conLen = -1
+        count = -2
+        flag = False
+        while count < conLen:
             for line in msg.splitlines():
-                if conLen!=-1:
+                if flag:
+                    count += len(line)
+                elif conLen!=-1:
                     if not line.strip():
                         print("found newline "+line)
+                        count = 0
+                        flag = True
                 elif "Content-Length:" in line:
                     print("found it = " + line[16:])
-                    conLen = line[16:]
+                    conLen = int(line[16:])
+            left = conLen - count
+            if left < 1024:
+                buff = left
+            else:
+                buff = 1024
 
             clientsocket.send(msg)
-            msg = serversocket.recv(1024)
+            msg = serversocket.recv(buff)
 
 
     print("closed socket with "+str(addr))
