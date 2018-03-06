@@ -52,7 +52,7 @@ def on_new_client(serversocket, clientsocket, addr):
 
             elif not line.strip():
                 start = True
-                count = 2
+                # count = 2
 
             elif "Content-Length:" in line:
                 fileSize = int(line[16:])
@@ -75,6 +75,8 @@ def on_new_client(serversocket, clientsocket, addr):
             if diff < buff:
                 buff = diff
             print("countint " + str(diff) + " out of " + str(fileSize))
+        print("-------------  out of looooooooop ------------")
+
     print("closed socket with "+str(addr))
     clientsocket.close()
 
