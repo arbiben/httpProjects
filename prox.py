@@ -46,10 +46,11 @@ def on_new_client(serversocket, clientsocket, addr):
         fileSize = 0
         count = 0
         start = False # passed header
-
+        newMsg = ""
         for line in msg.splitlines():
             if start:
                 count+=len(line)+1
+                newMsg += line+"\n"
 
             elif not line.strip():
                 start = True
@@ -57,7 +58,7 @@ def on_new_client(serversocket, clientsocket, addr):
             elif "Content-Length:" in line:
                 fileSize = int(line[16:])
 
-        clientsocket.send(msg)
+        clientsocket.send(newMsg)
 
         diff = fileSize - count
         if diff < buff:
