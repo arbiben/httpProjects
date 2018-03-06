@@ -37,6 +37,7 @@ def on_new_client(serversocket, clientsocket, addr):
         print("client >> " + msg)
         serversocket.send(msg)        # send to server    
         msg = serversocket.recv(buff) # from server
+        
         if not msg:
             print("closed in \"not\" clause "+str(addr))
             clientsocket.close()
@@ -46,32 +47,17 @@ def on_new_client(serversocket, clientsocket, addr):
         idx = msg.find("Content-Length:") + 16
         last = msg.find("\r\n", idx)
         fileSize = msg[idx: last]
-        count = 0
-        start = False # passed header
-        print("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"+str(msg.find("Content-Length:")))
-        print("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"+str(msg.find("\r\n\r\n")))
-        print(str(fileSize) + "-=-=-==-=-=-==---==-=-=-=-=-==-=-=-=-=-=-=-===")
-        
-        for line in msg.splitlines():
-            if start:
-                count+=len(line)+1
-
-            elif not line.strip():
-                start = True
-                # count = 2
-
-            elif "Content-Length:" in line:
-                fileSize = int(line[16:])
+        idx = msg.find("\r\n\r\n") + 4
+        count = len(msg) - idx
 
         clientsocket.send(msg)
 
         diff = fileSize - count
         if diff < buff:
             buff = diff
-
+        print("countint " + str(diff) + " out of " + str(fileSize))
         
         while diff>0:
-            print("countint " + str(diff) + " out of " + str(fileSize))
             msg = serversocket.recv(buff)
             print(msg)
             clientsocket.send(msg)
