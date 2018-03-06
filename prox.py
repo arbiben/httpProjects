@@ -48,6 +48,7 @@ def on_new_client(serversocket, clientsocket, addr):
                     if not line.strip():
                         print("found newline "+line)
                         count = 0
+                        print("this is the line = "+line)
                         flag = True
                         pri = False
                 elif "Content-Length:" in line:
@@ -57,7 +58,8 @@ def on_new_client(serversocket, clientsocket, addr):
                 if pri:
                     print(line)
             
-            left = conLen - count
+                left = conLen - count
+                
             if left < 1024:
                 buff = left
             else:
