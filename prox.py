@@ -52,6 +52,7 @@ def on_new_client(serversocket, clientsocket, addr):
 
             elif not line.strip():
                 start = True
+                count = 4
 
             elif "Content-Length:" in line:
                 fileSize = int(line[16:])
