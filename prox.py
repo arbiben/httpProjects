@@ -26,52 +26,46 @@ def main():
     serv.close()
 
 def on_new_client(serversocket, clientsocket, addr):
-    while True:
-        msg = clientsocket.recv(1024)
+    buff = 1024
+    msg = clientsocket.recv(buff)  # GET
+    serversocket.send(msg)        # to server
+    msg = serversocket.recv(buff) # from server
+    if not msg:
+        print("closed socket with "+str(addr))
+        clientsocket.close()
+        return
 
-        print("from client >> " + msg)
-        if not msg:
-            break
-        
-        serversocket.send(msg)
-        msg = serversocket.recv(1024)
-        fileSize = -1
-        count = -2
-        flag = False
+    fileSize = 0
+    count = 0
+    start = False
+    
+    for line in msg.splitlines():
+        if start:
+            count+= len(line)
+        elif not linne.strip():
+            start = True
+            print("=========     header     ============")
+        elif "Content-Length:" in line:
+            fileSize = int(line[16:])
+    
+    clientsocket.send(msg)
+    print(msg)
+    diff = fileSize - count
+    if diff < buff:
+        buff = diff
 
-        while count < fileSize:
-            for line in msg.splitlines():
-                if flag:
-                    count += sys.getsizeof(line)
-                    print(line)
-                    print(str(count))
+    print("==========================")
+    while count<fileSize:
+        msg = serversocket.recv(buff)
+        clientsocket.send(msg)
+        print(msg)
+        count += len(msg)
+        diff = fileSize - count
+            if diff < buff:
+            buff = diff
 
-                elif fileSize!=-1:
-                    if not line.strip():
-                        print("+++++++++++++++++++++++++++++")
-                        count = 0
-                        flag = True
-
-                elif "Content-Length:" in line:
-                    fileSize = int(line[16:])
-                    print(line)
-
-                left = fileSize - count
-
-            if left < 1024:
-                buff = left
-            else:
-                buff = 1024
-
-            print(buff)
-            clientsocket.send(msg)
-            if buff > 0 :
-                msg = serversocket.recv(buff)
-
-
-    print("closed socket with "+str(addr))
+    
     clientsocket.close()
-
 
 if __name__=="__main__":
     main()
