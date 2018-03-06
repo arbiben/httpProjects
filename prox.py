@@ -63,6 +63,7 @@ def on_new_client(serversocket, clientsocket, addr):
             else:
                 buff = 1024
 
+            print(buff)
             clientsocket.send(msg)
             if buff > 0 :
                 msg = serversocket.recv(buff)
