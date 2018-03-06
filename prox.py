@@ -26,51 +26,51 @@ def main():
     serv.close()
 
 def on_new_client(serversocket, clientsocket, addr):
-    buff = 1024
-    msg = clientsocket.recv(buff) # GET
-    serversocket.send(msg)        # send to server
-    msg = serversocket.recv(buff) # from server
+    while True:
+        buff = 1024
+        msg = clientsocket.recv(buff) # GET
+        serversocket.send(msg)        # send to server
+        msg = serversocket.recv(buff) # from server
 
-    if not msg:
-        print("closed in \"not\" clause "+str(addr))
-        clientsocket.close()
-        return
+        if not msg:
+            print("closed in \"not\" clause "+str(addr))
+            clientsocket.close()
+            return
 
-    fileSize = 0
-    count = 0
-    start = False # passed header
+        fileSize = 0
+        count = 0
+        start = False # passed header
 
-    for line in msg.splitlines():
-        if not start:
-            print(line)
-    
-        if start:
-            count+=len(line)+1
+        for line in msg.splitlines():
+            if not start:
+                print(line)
+        
+            if start:
+                count+=len(line)+1
 
-        elif not line.strip():
-            start = True
+            elif not line.strip():
+                start = True
 
-        elif "Content-Length:" in line:
-            fileSize = int(line[16:])
+            elif "Content-Length:" in line:
+                fileSize = int(line[16:])
 
-    print("count is: "+str(count))
-
-    clientsocket.send(msg)
-
-    diff = fileSize - count
-    if diff < buff:
-        buff = diff
-
-    
-    while count<fileSize:
-        msg = serversocket.recv(buff)
+        
         clientsocket.send(msg)
-
-        count+= len(msg)
 
         diff = fileSize - count
         if diff < buff:
             buff = diff
+
+        
+        while count<fileSize:
+            msg = serversocket.recv(buff)
+            clientsocket.send(msg)
+
+            count+= len(msg)
+
+            diff = fileSize - count
+            if diff < buff:
+                buff = diff
 
     print("closed socket with "+str(addr))
     clientsocket.close()
