@@ -40,7 +40,7 @@ def on_new_client(serversocket, clientsocket, addr):
             count = 0
             for line in msg.splitlines():
                 if conLen!=-1:
-                    if "\n" in line:
+                    if not line.strip():
                         print("found newline "+line)
                 elif "Content-Length:" in line:
                     print("found it = " + line[16:])
