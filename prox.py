@@ -34,11 +34,7 @@ def on_new_client(serversocket, clientsocket, addr):
     while True:    
         buff = 1024
         msg = clientsocket.recv(buff) # GET
-        if not msg:
-            print("closed in \"not\" clause "+str(addr))
-            clientsocket.close()
-            return
-        
+        print(msg)
         serversocket.send(msg)        # send to server    
         msg = serversocket.recv(buff) # from server
         if not msg:
@@ -46,6 +42,7 @@ def on_new_client(serversocket, clientsocket, addr):
             clientsocket.close()
             return
 
+        print(msg)
         fileSize = 0
         count = 0
         start = False # passed header
@@ -68,6 +65,7 @@ def on_new_client(serversocket, clientsocket, addr):
 
         
         while count<fileSize:
+            print(msg)
             msg = serversocket.recv(buff)
             clientsocket.send(msg)
             count+= len(msg)
