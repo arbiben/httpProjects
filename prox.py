@@ -26,7 +26,7 @@ def main():
     while True:
         c, addr = s.accept()
         print("connection from: " + str(addr)+"\n")
-        thread.start_new_thread(on_new_client, (serv2, c, addr))
+        thread.start_new_thread(on_new_client, (serv, c, addr))
     c.close()
     serv.close()
 
@@ -34,7 +34,7 @@ def on_new_client(serversocket, clientsocket, addr):
     while True:    
         buff = 1024
         msg = clientsocket.recv(buff) # GET
-        print(msg)
+        print("client >> " + msg)
         serversocket.send(msg)        # send to server    
         msg = serversocket.recv(buff) # from server
         if not msg:
@@ -42,7 +42,7 @@ def on_new_client(serversocket, clientsocket, addr):
             clientsocket.close()
             return
 
-        print(msg)
+        print("server >> " + msg)
         fileSize = 0
         count = 0
         start = False # passed header
@@ -73,7 +73,7 @@ def on_new_client(serversocket, clientsocket, addr):
             diff = fileSize - count
             if diff < buff:
                 buff = diff
-
+        print("-----------------------------------")
     print("closed socket with "+str(addr))
     clientsocket.close()
 
