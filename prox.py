@@ -57,16 +57,16 @@ def on_new_client(serversocket, clientsocket, addr):
                 if pri:
                     print(line)
             
-        left = conLen - count
-        if left < 1024:
-            buff = left
-        else:
-            buff = 1024
+            left = conLen - count
+            if left < 1024:
+                buff = left
+            else:
+                buff = 1024
 
-        print(buff)
-        clientsocket.send(msg)
-        if buff > 0 :
-            msg = serversocket.recv(buff)
+            print(buff)
+            clientsocket.send(msg)
+            if buff > 0 :
+                msg = serversocket.recv(buff)
 
 
     print("closed socket with "+str(addr))
