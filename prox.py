@@ -27,9 +27,10 @@ def main():
 
 def on_new_client(serversocket, clientsocket, addr):
     buff = 1024
-    msg = clientsocket.recv(buff)  # GET
-    serversocket.send(msg)        # to server
+    msg = clientsocket.recv(buff) # GET
+    serversocket.send(msg)        # send to server
     msg = serversocket.recv(buff) # from server
+    
     if not msg:
         print("closed socket with "+str(addr))
         clientsocket.close()
@@ -38,21 +39,27 @@ def on_new_client(serversocket, clientsocket, addr):
     fileSize = 0
     count = 0
     start = False
-    
+    OK = True
     for line in msg.splitlines():
+        if OK:
+            print(line)
+
         if start:
             count+= len(line)
+
         elif not line.strip():
             start = True
+            OK = False
             print("=========     header     ============")
+
         elif "Content-Length:" in line:
             fileSize = int(line[16:])
             print(fileSize)
             print(str(int(line[16:])))
             print(line[16:])
     
+
     clientsocket.send(msg)
-    print(msg)
     diff = fileSize - count
     if diff < buff:
         buff = diff
