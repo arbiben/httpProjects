@@ -35,16 +35,17 @@ def on_new_client(serversocket, clientsocket, addr):
         
         serversocket.send(msg)
         msg = serversocket.recv(1024)
-        conLen = -1
+        fileSize = -1
         count = -2
         flag = False
         pri = True
-        while count < conLen:
+        while count < fileSize:
             for line in msg.splitlines():
                 if flag:
-                    count += len(line)
+                    count += sys.getsizeof(line)
+                    #print(line)
 
-                elif conLen!=-1:
+                elif fileSize!=-1:
                     if not line.strip():
                         print("found newline "+line)
                         count = 0
@@ -52,14 +53,15 @@ def on_new_client(serversocket, clientsocket, addr):
                         flag = True
                         pri = False
                 elif "Content-Length:" in line:
-                    print("found it = " + line[16:])
-                    conLen = int(line[16:])
+                    fileSize = int(line[16:])
+                    print("found it = " + str(fileSize))
+                    
 
                 if pri:
                     print(line)
-            
+                print("")
                 left = conLen - count
-                
+
             if left < 1024:
                 buff = left
             else:
