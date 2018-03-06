@@ -60,7 +60,7 @@ def on_new_client(serversocket, clientsocket, addr):
                 if pri:
                     print(line)
                 print("")
-                left = conLen - count
+                left = fileSize - count
 
             if left < 1024:
                 buff = left
