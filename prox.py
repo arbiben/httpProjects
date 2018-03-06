@@ -13,7 +13,7 @@ def main():
 
     serv = socket.socket()
     serv.connect((host, cPort))
-    print("conneted to 3.0.0.1 server \n")
+    print("conneted to 3.0.0.1 server ")
 
     serv2 = socket.socket()
     serv2.connect((host2, cPort))
@@ -34,7 +34,11 @@ def on_new_client(serversocket, clientsocket, addr):
     while True:    
         buff = 1024
         msg = clientsocket.recv(buff) # GET
-        print(msg+"\n")
+        if not msg:
+            print("closed in \"not\" clause "+str(addr))
+            clientsocket.close()
+            return
+        
         serversocket.send(msg)        # send to server    
         msg = serversocket.recv(buff) # from server
         if not msg:
