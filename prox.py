@@ -36,11 +36,12 @@ def on_new_client(serversocket, clientsocket, addr):
         msg = serversocket.recv(1024)
     
         while msg:
-            l = 0
+            conLen = -1
+
             for line in msg.splitlines():
                 if "Content-Length:" in line:
-                    l = int(line[15:])
-                    print("found it = " + str(l)
+                    print("found it = " + line[16:])
+                    conLen = line[16:]
 
             clientsocket.send(msg)
             msg = serversocket.recv(1024)
