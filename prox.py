@@ -47,6 +47,9 @@ def on_new_client(serversocket, clientsocket, addr):
             print("=========     header     ============")
         elif "Content-Length:" in line:
             fileSize = int(line[16:])
+            print(fileSize)
+            print(str(int(line[16:]))
+            print(line[16:])
     
     clientsocket.send(msg)
     print(msg)
@@ -63,7 +66,8 @@ def on_new_client(serversocket, clientsocket, addr):
         diff = fileSize - count
         if diff < buff:
             buff = diff
-        
+        if count==10217:
+            break
         print(str(fileSize) + " ----- " + str(count))
 
     print("closed socket with "+str(addr))
