@@ -61,7 +61,7 @@ def on_new_client(serversocket, clientsocket, addr):
         print(msg)
         count += len(msg)
         diff = fileSize - count
-            if diff < buff:
+        if diff < buff:
             buff = diff
 
     
