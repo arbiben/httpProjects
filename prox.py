@@ -48,8 +48,8 @@ def on_new_client(serversocket, clientsocket, addr):
         elif "Content-Length:" in line:
             fileSize = int(line[16:])
             print(fileSize)
-            print(str(int(line[16:]))
-            print(str(line[16:]))
+            print(str(int(line[16:])))
+            print(line[16:])
     
     clientsocket.send(msg)
     print(msg)
