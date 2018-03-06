@@ -29,10 +29,10 @@ def on_new_client(serversocket, clientsocket, addr):
     
     buff = 1024
     msg = clientsocket.recv(buff) # GET
-    print(msg+"\n\n")
+    print(msg+"\n")
     serversocket.send(msg)        # send to server    
     msg = serversocket.recv(buff) # from server
-
+    print(msg+"\n")
     if not msg:
         print("closed in \"not\" clause "+str(addr))
         clientsocket.close()
@@ -55,7 +55,6 @@ def on_new_client(serversocket, clientsocket, addr):
         elif "Content-Length:" in line:
             fileSize = int(line[16:])
 
-    print(msg)
     clientsocket.send(msg)
 
     diff = fileSize - count
