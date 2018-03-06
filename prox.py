@@ -31,65 +31,73 @@ def on_new_client(serversocket, clientsocket, addr):
     serversocket.send(msg)        # send to server
     msg = serversocket.recv(buff) # from server
     print(str(len(msg)) + "<<<<<<<<<<<<<<-----------")
-    if not msg:
-        print("closed socket with "+str(addr))
-        clientsocket.close()
-        return
+    idx = 15 + msg.index("Content-Length:")
+    last = idx
+    while msg[last] != " ":
+        last+=1
 
-    fileSize = 0
-    count = 0
-    header = 0
-    temp = 0
+    fileSize = msg[idx:last]
+    print(str(fileSize))
 
-    start = False # passed header
+    # if not msg:
+    #     print("closed in not clause "+str(addr))
+    #     clientsocket.close()
+    #     return
 
-    for line in msg.splitlines():
-        print(line)
-        if not start:
-            header+=len(line)
-            # count+=len(line)
-            temp+=len(line)
+    # fileSize = 0
+    # count = 0
+    # header = 0
+    # temp = 0
 
-        if start:
-            count+= len(line)
-            temp+= len(line)
+    # start = False # passed header
 
-        elif not line.strip():
-            start = True
-            count += len(line)
-            header+= len(line)
-            temp += len(line)
+    # for line in msg.splitlines():
+    #     print(line)
+    #     if not start:
+    #         header+=len(line)
+    #         # count+=len(line)
+    #         temp+=len(line)
 
-        elif "Content-Length:" in line:
-            fileSize = int(line[16:])
-            temp+= len(line)
-            header+= len(line)
+    #     if start:
+    #         count+= len(line)
+    #         temp+= len(line)
 
-    print("header is: " + str(header))
-    # print("the rest is: " + str(count))
-    # print("all is: "+str(temp))
+    #     elif not line.strip():
+    #         start = True
+    #         count += len(line)
+    #         header+= len(line)
+    #         temp += len(line)
 
-    clientsocket.send(msg)
+    #     elif "Content-Length:" in line:
+    #         fileSize = int(line[16:])
+    #         temp+= len(line)
+    #         header+= len(line)
 
-    diff = fileSize - count
-    if diff < buff:
-        buff = diff
+    # print("header is: " + str(header))
+    # # print("the rest is: " + str(count))
+    # # print("all is: "+str(temp))
+
+    # clientsocket.send(msg)
+
+    # diff = fileSize - count
+    # if diff < buff:
+    #     buff = diff
 
     
-    while count<fileSize:
-        msg = serversocket.recv(buff)
-        clientsocket.send(msg)
-        print(str(len(msg)) + "<<<<<<<<<<<<<<-----------")
+    # while count<fileSize:
+    #     msg = serversocket.recv(buff)
+    #     clientsocket.send(msg)
+    #     print(str(len(msg)) + "<<<<<<<<<<<<<<-----------")
         
-        for line in msg.splitlines():
-            count += len(msg)
-            temp += len(msg)
+    #     for line in msg.splitlines():
+    #         count += len(msg)
+    #         temp += len(msg)
 
-        diff = fileSize - count
-        if diff < buff:
-            buff = diff
+    #     diff = fileSize - count
+    #     if diff < buff:
+    #         buff = diff
         
-        print(str(fileSize) + " ----- " + str(count))
+    #     print(str(fileSize) + " ----- " + str(count))
 
     print("closed socket with "+str(addr))
     clientsocket.close()
