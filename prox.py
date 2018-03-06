@@ -88,7 +88,7 @@ def on_new_client(serversocket, clientsocket, addr):
         if diff < buff:
             buff = diff
         
-        print(str(fileSize) + " ----- " + str(temp))
+        print(str(fileSize) + " ----- " + str(count))
 
     print("closed socket with "+str(addr))
     clientsocket.close()
