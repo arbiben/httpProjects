@@ -30,7 +30,7 @@ def on_new_client(serversocket, clientsocket, addr):
     msg = clientsocket.recv(buff) # GET
     serversocket.send(msg)        # send to server
     msg = serversocket.recv(buff) # from server
-    print(len(msg) + "<<<<<<<<<<<<<<-----------")
+    print(str(len(msg)) + "<<<<<<<<<<<<<<-----------")
     if not msg:
         print("closed socket with "+str(addr))
         clientsocket.close()
@@ -79,7 +79,7 @@ def on_new_client(serversocket, clientsocket, addr):
     while count<fileSize:
         msg = serversocket.recv(buff)
         clientsocket.send(msg)
-        print(len(msg) + "<<<<<<<<<<<<<<-----------")
+        print(str(len(msg)) + "<<<<<<<<<<<<<<-----------")
         
         for line in msg.splitlines():
             count += len(msg)
