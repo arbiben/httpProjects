@@ -45,7 +45,7 @@ def on_new_client(serversocket, clientsocket, addr):
     for line in msg.splitlines():
         if not start:
             #print(line)
-    
+            x = 1
         if start:
             count+=len(line)+1
 
