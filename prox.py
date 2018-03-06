@@ -64,7 +64,7 @@ def on_new_client(serversocket, clientsocket, addr):
         if diff < buff:
             buff = diff
 
-    
+    print("closed socket with "+str(addr))
     clientsocket.close()
 
 if __name__=="__main__":
