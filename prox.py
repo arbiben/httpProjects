@@ -8,7 +8,7 @@ def main():
     #host = '127.0.0.1'
     host = '3.0.0.1'
     host2 = '4.0.0.1'
-    sPort = sys.argv[1]
+    sPort = int(sys.argv[1])
     cPort = 8080
 
     serv = socket.socket()
