@@ -38,18 +38,24 @@ def on_new_client(serversocket, clientsocket, addr):
         conLen = -1
         count = -2
         flag = False
+        pri = True
         while count < conLen:
             for line in msg.splitlines():
                 if flag:
                     count += len(line)
+
                 elif conLen!=-1:
                     if not line.strip():
                         print("found newline "+line)
                         count = 0
                         flag = True
+                        pri = False
                 elif "Content-Length:" in line:
                     print("found it = " + line[16:])
                     conLen = int(line[16:])
+
+                if pri:
+                    print(line)
             
             left = conLen - count
             if left < 1024:
