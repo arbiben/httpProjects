@@ -80,9 +80,9 @@ def on_new_client(serversocket, clientsocket, addr):
         msg = serversocket.recv(buff)
         clientsocket.send(msg)
         
-        print(msg)
-        count += len(msg)
-        temp += len(msg)
+        for line in msg.splitlines():
+            count += len(msg)
+            temp += len(msg)
 
         diff = fileSize - count
         if diff < buff:
