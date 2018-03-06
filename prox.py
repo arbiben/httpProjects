@@ -44,7 +44,7 @@ def on_new_client(serversocket, clientsocket, addr):
 
     for line in msg.splitlines():
         if not start:
-            print(line)
+            #print(line)
     
         if start:
             count+=len(line)+1
@@ -55,7 +55,7 @@ def on_new_client(serversocket, clientsocket, addr):
         elif "Content-Length:" in line:
             fileSize = int(line[16:])
 
-    
+    print(msg)
     clientsocket.send(msg)
 
     diff = fileSize - count
@@ -66,7 +66,7 @@ def on_new_client(serversocket, clientsocket, addr):
     while count<fileSize:
         msg = serversocket.recv(buff)
         clientsocket.send(msg)
-
+        print(msg)
         count+= len(msg)
 
         diff = fileSize - count
