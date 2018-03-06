@@ -60,17 +60,16 @@ def on_new_client(serversocket, clientsocket, addr):
 
     
     while count<fileSize:
-        print("==========================")
         msg = serversocket.recv(buff)
         clientsocket.send(msg)
-        print(msg)
-        print(len(msg))
+        if len(msg) == 0:
+            break
+        
         count += len(msg)
         diff = fileSize - count
         if diff < buff:
             buff = diff
-        if count==10217:
-            break
+
         print(str(fileSize) + " ----- " + str(count))
 
     print("closed socket with "+str(addr))
