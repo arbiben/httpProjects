@@ -46,7 +46,9 @@ def on_new_client(serversocket, clientsocket, addr):
         fileSize = 0
         count = 0
         start = False # passed header
-        print("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"+msg.find("Content-Length:"))
+        print("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"+str(msg.find("Content-Length:")))
+        print("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"+str(msg.find("\r\n\r\n")))
+
         for line in msg.splitlines():
             if start:
                 count+=len(line)+1
