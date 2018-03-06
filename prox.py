@@ -74,6 +74,7 @@ def on_new_client(serversocket, clientsocket, addr):
             diff = fileSize - count
             if diff < buff:
                 buff = diff
+            print("countint " + str(diff) + " out of " + str(fileSize))
     print("closed socket with "+str(addr))
     clientsocket.close()
 
