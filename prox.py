@@ -50,6 +50,7 @@ def on_new_client(serversocket, clientsocket, addr):
                 elif "Content-Length:" in line:
                     print("found it = " + line[16:])
                     conLen = int(line[16:])
+            
             left = conLen - count
             if left < 1024:
                 buff = left
@@ -57,7 +58,8 @@ def on_new_client(serversocket, clientsocket, addr):
                 buff = 1024
 
             clientsocket.send(msg)
-            msg = serversocket.recv(buff)
+            if buff > 0 :
+                msg = serversocket.recv(buff)
 
 
     print("closed socket with "+str(addr))
