@@ -42,7 +42,7 @@ def on_new_client(serversocket, clientsocket, addr):
     for line in msg.splitlines():
         if start:
             count+= len(line)
-        elif not linne.strip():
+        elif not line.strip():
             start = True
             print("=========     header     ============")
         elif "Content-Length:" in line:
