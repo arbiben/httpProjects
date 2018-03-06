@@ -47,12 +47,10 @@ def on_new_client(serversocket, clientsocket, addr):
         elif not line.strip():
             start = True
             print("=========     header     ============")
-
+            count += len(line)
         elif "Content-Length:" in line:
             fileSize = int(line[16:])
-            print(fileSize)
-            print(str(int(line[16:])))
-            print(line[16:])
+
     
 
     clientsocket.send(msg)
