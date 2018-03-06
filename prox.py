@@ -30,9 +30,9 @@ def on_new_client(serversocket, clientsocket, addr):
     msg = clientsocket.recv(buff) # GET
     serversocket.send(msg)        # send to server
     msg = serversocket.recv(buff) # from server
-    print(str(len(msg)) + "<<<<<<<<<<<<<<-----------")
-    idx = 15 + msg.index("Content-Length:")
-    print(str(idx))
+    print(msg)
+    # idx = 15 + msg.index("Content-Length:")
+    # print(str(idx))
     # last = idx
     # while msg[last] != " ":
     #     last+=1
