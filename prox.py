@@ -26,7 +26,7 @@ def main():
     while True:
         c, addr = s.accept()
         print("connection from: " + str(addr)+"\n")
-        thread.start_new_thread(on_new_client, (serv, c, addr))
+        thread.start_new_thread(on_new_client, (serv2, c, addr))
     c.close()
     serv.close()
 
