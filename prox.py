@@ -44,12 +44,13 @@ def on_new_client(serversocket, clientsocket, addr):
             clientsocket.close()
             return
 
-        print("server >> " + msg)
         idx = msg.find("Content-Length:") + 16
         last = msg.find("\r\n", idx)
         fileSize = int(msg[idx: last].strip())
         idx = msg.find("\r\n\r\n") + 4
         count = len(msg) - idx
+        print(">>>>>>>>>>>>>>>>>>>>server>>>>>>>>>>>>>>>>>>>>>>> \n" + msg[:idx])
+        print(">>>>>>>>>>>>>>>>>>>>server>>>>>>>>>>>>>>>>>>>>>>>")
         
         clientsocket.send(msg)
 
@@ -58,7 +59,7 @@ def on_new_client(serversocket, clientsocket, addr):
             buff = diff
         
         while diff>0:
-            # msg = serversocket.recv(buff)
+            msg = serversocket.recv(buff)
             print(msg)
             clientsocket.send(msg)
             count+= len(msg)
