@@ -42,8 +42,11 @@ def on_new_client(serversocket, clientsocket, addr):
 
         # print("------------------- client -------------------\n" + msg)
         # print("------------------- client -------------------")
+        t_start = time.time()
         serversocket.send(msg)        # send to server    
         msg = serversocket.recv(buff) # from server
+        ttl = time.time()-t_start
+        print(str(ttl)+"----------------------------------------")
         
         if not msg:
             print("closed in \"not\" SERVER clause "+str(addr))
