@@ -46,8 +46,8 @@ def on_new_client(serversocket, clientsocket, addr):
         serversocket.send(msg)        # send to server    
         msg = serversocket.recv(buff) # from server
         ttl = time.time()-t_start
-        print(str(ttl)+"----------------------------------------")
-        
+        throughput = getThroughput(ttl, len(msg))
+        print(throughput)
         if not msg:
             print("closed in \"not\" SERVER clause "+str(addr))
             clientsocket.close()
@@ -84,6 +84,9 @@ def getMan(msg):
     msg = parsed[0] + "_nolist.f4m"+parsed[1]
     print(msg)
     return msg 
+
+def getThroughput(ttl, b):
+    return (1.0*b)/ttl
 
 if __name__=="__main__":
     main()
