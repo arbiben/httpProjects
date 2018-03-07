@@ -79,8 +79,8 @@ def on_new_client(serversocket, clientsocket, addr):
 
 def getMan(msg, idx):
     last = msg.find(" ", idx)
-    print(last)
-    return last
+    print(msg[idx:last])
+    return msg[idx:last]
 
 if __name__=="__main__":
     main()
