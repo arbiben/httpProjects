@@ -36,13 +36,12 @@ def on_new_client(serversocket, clientsocket, addr):
     while True:
         buff = 1024
         msg = clientsocket.recv(buff) # GET
-        man = ""
         
         if msg.find(".f4m") != -1:
-            man = getMan(msg, msg.find("/"))
+            msg = getMan(msg)
 
-        print("------------------- client -------------------\n" + msg)
-        print("------------------- client -------------------")
+        # print("------------------- client -------------------\n" + msg)
+        # print("------------------- client -------------------")
         serversocket.send(msg)        # send to server    
         msg = serversocket.recv(buff) # from server
         
@@ -56,8 +55,8 @@ def on_new_client(serversocket, clientsocket, addr):
         fileSize = int(msg[idx: last].strip())
         idx = msg.find("\r\n\r\n") + 4
         count = len(msg) - idx
-        print(">>>>>>>>>>>>>>>>>>>>server>>>>>>>>>>>>>>>>>>>>>>> \n" + msg[:idx])
-        print(">>>>>>>>>>>>>>>>>>>>server>>>>>>>>>>>>>>>>>>>>>>>")
+        # print(">>>>>>>>>>>>>>>>>>>>server>>>>>>>>>>>>>>>>>>>>>>> \n" + msg[:idx])
+        # print(">>>>>>>>>>>>>>>>>>>>server>>>>>>>>>>>>>>>>>>>>>>>")
         
         clientsocket.send(msg)
 
@@ -77,10 +76,11 @@ def on_new_client(serversocket, clientsocket, addr):
     print("closed socket with "+str(addr))
     clientsocket.close()
 
-def getMan(msg, idx):
-    last = msg.find(" ", idx)
-    print(msg[idx:last])
-    return msg[idx:last]
+def getMan(msg):
+    parsed = msg.split(".f4m")
+    msg = parsed[0] + "_nolist"+parsed[1]
+    print(msg)
+    return msg 
 
 if __name__=="__main__":
     main()
