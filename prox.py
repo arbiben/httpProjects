@@ -78,7 +78,7 @@ def on_new_client(serversocket, clientsocket, addr):
 
 def getMan(msg):
     parsed = msg.split(".f4m")
-    msg = parsed[0] + "_nolist"+parsed[1]
+    msg = parsed[0] + "_nolist.f4m"+parsed[1]
     print(msg)
     return msg 
 
