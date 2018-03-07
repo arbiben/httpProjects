@@ -28,7 +28,7 @@ def main():
         c, addr = s.accept()
         print("connection from: " + str(addr)+"\n")
         thread.start_new_thread(on_new_client, (serv, c, addr))
-        // create a thread obj, 
+        # create a thread obj, 
     c.close()
     serv.close()
 
