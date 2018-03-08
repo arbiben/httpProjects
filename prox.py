@@ -69,12 +69,12 @@ def on_new_client(clientsocket, addr):
             break
                 
         if req.find(".f4m") != -1:
-            if sendMan(req, serversocket, clientsocket, throughput) == -1:
+            if sendMan(req, serversocket, clientsocket) == -1:
                 print("closed in \"not\" SERVER clause ")
                 break
 
         else:
-            if sendOther(req, serversocket, clientsocket, throughput) == -1:
+            if sendOther(req, serversocket, clientsocket) == -1:
                 print("closed in \"not\" SERVER clause ")
                 break
 
@@ -93,10 +93,10 @@ def sendMan(req, serversocket, clientsocket, throughput):
     ttl = time.time()-t_start
     
     # gather info on throughput
-    throughput = getThroughput(ttl, len(response), throughput)
+    throughput = getThroughput(ttl, len(response))
 
     #contains the manifest file we need
-    manif = getResponse(response, serversocket, clientsocket, throughput, False)
+    manif = getResponse(response, serversocket, clientsocket, False)
     handleManif(manif)
 
     #adjust request and resend to serever and response to client
@@ -109,14 +109,14 @@ def sendMan(req, serversocket, clientsocket, throughput):
     ttl = time.time()-t_start
 
     # gather info on throughput
-    throughput = getThroughput(ttl, len(response), throughput)
+    throughput = getThroughput(ttl, len(response))
 
-    getResponse(response, serversocket, clientsocket, throughput, True)
+    getResponse(response, serversocket, clientsocket, True)
     
 
 # gathers the response in one file and if needed - saves it for use
 # otherwise, sende it to client
-def getResponse(response, serversocket, clientsocket, throughput, toClient):
+def getResponse(response, serversocket, clientsocket, toClient):
     buff = buffSize
     fileSize, idx, count = getLength(response)
     respose_file = response[idx:]
@@ -156,7 +156,7 @@ def getLength(response):
     return [fileSize, idx, count]
 
 # if the response is not manifest it just sends it to the client
-def sendOther(req, serversocket, clientsocket, throughput):
+def sendOther(req, serversocket, clientsocket):
     # print("========================\n" + req + "\n=============================")
     buff = buffSize
     t_start = time.time()
@@ -165,13 +165,13 @@ def sendOther(req, serversocket, clientsocket, throughput):
     ttl = time.time()-t_start
 
     # gather info on throughput
-    throughput = getThroughput(ttl, len(response), throughput)
+    throughput = getThroughput(ttl, len(response))
 
     if not response:
         return -1
 
     # call method to handle the transfer of the packets
-    getResponse(response, serversocket, clientsocket, throughput, True)
+    getResponse(response, serversocket, clientsocket, True)
     return 0
 
 # reads the manifest file and adds bitrates to a list
@@ -181,13 +181,13 @@ def handleManif(m):
         if 'bitrate' in child.attrib:
             bitrates.append(int(child.attrib['bitrate']))
 
-
-
-def getThroughput(ttl, b, t_curr):
+def getThroughput(ttl, b):
     b = b/1000.0
     t_new = b/ttl
-    print((alpha * t_new) + t_curr*(1-alpha))
-    return (alpha * t_new) + t_curr*(1-alpha)
+    print((alpha * t_new) + throughput*(1-alpha))
+    # this is in kilo bits
+    # 4000 Kbits = 0.5 Mbyte
+    return (alpha * t_new) + throughput*(1-alpha)
 
 if __name__ == "__main__":
     main()
