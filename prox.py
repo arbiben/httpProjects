@@ -45,7 +45,7 @@ def main():
         print("connection from: " + str(addr)+"\n")
         #thread.start_new_thread(on_new_client, (serv, c, addr))
         
-        args = (c)
+        args = (c,addr)
         t = threading.Thread(target=on_new_client, args=args)
         t.start()
         t.join()
@@ -54,7 +54,7 @@ def main():
 # openes new socket and creates a connection between client
 # proxy and server - reads a get request and resposes based on
 # the type of get request (mov, manifest, html...)
-def on_new_client(clientsocket):
+def on_new_client(clientsocket, addr):
     serversocket = socket.socket()
     serversocket.bind((fake_ip, 0))
     serversocket.connect((server_ip, server_port))
