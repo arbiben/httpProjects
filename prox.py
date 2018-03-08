@@ -48,7 +48,7 @@ def on_new_client(serversocket, clientsocket, addr):
     while True:
         buff = 1024
         req = clientsocket.recv(buff) # GET
-        
+        print(req)
         if req.find(".f4m") != -1:
             if sendMan(req, serversocket, clientsocket, throughput) == -1:
                 print("closed in \"not\" SERVER clause "+str(addr))
