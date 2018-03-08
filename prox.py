@@ -48,6 +48,10 @@ def on_new_client(serversocket, clientsocket, addr):
     while True:
         buff = 1024
         req = clientsocket.recv(buff) # GET
+        if not req:
+            print("closed in \"not\" SERVER clause "+str(addr))
+                clientsocket.close()
+                
         print(req+"\n==================================================")
         if req.find(".f4m") != -1:
             if sendMan(req, serversocket, clientsocket, throughput) == -1:
@@ -109,6 +113,7 @@ def sendOther(req, serversocket, clientsocket, throughput):
 
     if not response:
         return -1
+    
     print(response+"\n=================================================================")
     idx = response.find("Content-Length:") + 16
     last = response.find("\r\n", idx)
@@ -132,6 +137,7 @@ def sendOther(req, serversocket, clientsocket, throughput):
         if diff < buff:
             buff = diff
         print(diff)
+    
     return 0
 
 def getThroughput(ttl, b, t_curr):
