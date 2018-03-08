@@ -50,65 +50,88 @@ def on_new_client(serversocket, clientsocket, addr):
         req = clientsocket.recv(buff) # GET
         
         if req.find(".f4m") != -1:
-            print(req)
-            req = getMan(req, serversocket, buff)
-            print("=============================================")
-            print(req)
+            if sendMan(req, serversocket, clientsocket, throughput) == -1:
+                print("closed in \"not\" SERVER clause "+str(addr))
+                clientsocket.close()
 
-        print("------------------- client -------------------\n" + req)
-        print("------------------- client -------------------")
-        t_start = time.time()
-        serversocket.send(req)        # send to server    
-        response = serversocket.recv(buff) # from server
-        ttl = time.time()-t_start
-
-        throughput = getThroughput(ttl, len(response), throughput)
-        print("throughput is: " + str(throughput))
-        
-        if not response:
-            print("closed in \"not\" SERVER clause "+str(addr))
-            clientsocket.close()
-            return
-
-        print(">>>>>>>>>>>>>>>>>>>>server>>>>>>>>>>>>>>>>>>>>>>> \n" + response)
-        print(">>>>>>>>>>>>>>>>>>>>server>>>>>>>>>>>>>>>>>>>>>>>")
-        idx = response.find("Content-Length:") + 16
-        last = response.find("\r\n", idx)
-        print("CONTENT LENGTH IS: " + response[idx: last].strip())
-        fileSize = int(response[idx: last].strip())
-        idx = response.find("\r\n\r\n") + 4
-        count = len(response) - idx
-        
-        
-        clientsocket.send(response)
-
-        diff = fileSize - count
-        if diff < buff:
-            buff = diff
-        
-        while diff>0:
-            response = serversocket.recv(buff)
-            clientsocket.send(response)
-            count += len(response)
-            print(response)
-
-            diff = fileSize - count
-            if diff < buff:
-                buff = diff
+        else:
+            sendOther(req, serversocket, clientsocket, throughput)
     
     print("closed socket with "+str(addr))
     clientsocket.close()
 
 
-def getMan(msg, serversocket, buffer):
+def sendMan(msg, serversocket, clientsocket, throughput):
+    t_start = time.time()
+    # get the manifest file and send the nolist one
     serversocket.send(msg)
-    manif = serversocket.recv(buffer)
+    manif = ''
+    temp = serversocket.recv(1024)
+    
+    ttl = time.time()-t_start
+    
+    while (temp != ''):
+        t_start = time.time()
+        
+        manif += temp
+        temp = serversocket.recv(1024)
+
+        ttl = time.time()-t_start
 
     parsed = msg.split(".f4m")
     msg = parsed[0] + "_nolist.f4m"+parsed[1]
-    print(msg)
-    print("-----  int getMan -------")
-    return msg 
+    
+    t_start = time.time()
+    # appended nolist and send to server 
+    serversocket.send(msg)
+    othermanif = ''
+    temp = serversocket.recv(1024)
+    ttl = time.time()-t_start
+    
+    while (temp != ''):
+        t_start = time.time()
+        
+        clientsocket.send(temp)
+        othermanif += temp
+        temp = serversocket.recv(1024)
+    
+        ttl = time.time()-t_start
+
+
+def sendOther(req, serversocket, clientsocket, throughput):
+    buff = 1024
+    t_start = time.time()
+    serversocket.send(req)        # send to server
+    response = serversocket.recv(buff)  # from server
+    ttl = time.time()-t_start
+
+    throughput = getThroughput(ttl, len(response), throughput)
+
+    if not response:
+        return -1
+
+    idx = response.find("Content-Length:") + 16
+    last = response.find("\r\n", idx)
+    fileSize = int(response[idx: last].strip())
+    idx = response.find("\r\n\r\n") + 4
+    count = len(response) - idx
+
+    clientsocket.send(response)
+
+    diff = fileSize - count
+    if diff < buff:
+        buff = diff
+
+    while diff > 0:
+        response = serversocket.recv(buff)
+        clientsocket.send(response)
+        count += len(response)
+        print(response)
+
+        diff = fileSize - count
+        if diff < buff:
+            buff = diff
+    return 0
 
 def getThroughput(ttl, b, t_curr):
     t_new = b/ttl
