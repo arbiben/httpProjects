@@ -14,7 +14,7 @@ host2 = '4.0.0.1'
 sPort = int(sys.argv[2])
 cPort = 8080
 # fakeIP = 
-global alpha = float(sys.argv[1])
+alpha = float(sys.argv[1])
 
 
 # <log > <alpha > <listen-port > <fake-ip > <web-server-ip >
