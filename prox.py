@@ -12,7 +12,8 @@ def main():
     sPort = int(sys.argv[2])
     cPort = 8080
     # fakeIP = 
-    global alpha = float(sys.argv[1])
+    global alpha
+    alpha = float(sys.argv[1])
 
 
     # <log > <alpha > <listen-port > <fake-ip > <web-server-ip >
