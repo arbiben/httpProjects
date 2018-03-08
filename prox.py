@@ -84,7 +84,7 @@ def on_new_client(clientsocket, addr):
 
 
 # get the manifest file and send the nolist manifest
-def sendMan(req, serversocket, clientsocket, throughput):
+def sendMan(req, serversocket, clientsocket):
     buff = buffSize
     print("========begin=========\n" + req + "\n============end============")
     t_start = time.time()
