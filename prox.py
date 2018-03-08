@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import sys, socket ,thread, threading, time, select
-import xml.etree.ElementTree as xml
+import xml.etree.ElementTree as xmlReader
 
 # <log > <alpha > <listen-port > <fake-ip > <web-server-ip >
 if len(sys.argv) != 5:
@@ -183,9 +183,10 @@ def sendOther(req, serversocket, clientsocket, throughput):
 
 # reads the manifest file and adds bitrates to a list
 def handleManif(m):
-    manif = xml.fromstring(m)
-    for child in manif:
-        print child.tag, child.attrib
+    print(m)
+    # manif = xmlReader.fromstring(m)
+    # for child in manif:
+    #     print child.tag, child.attrib
 
 
 
