@@ -56,7 +56,7 @@ def on_new_client(serversocket, clientsocket, addr):
 
         throughput = getThroughput(ttl, len(msg), throughput)
 
-        print(throughput)
+        # print(throughput)
         
         if not msg:
             print("closed in \"not\" SERVER clause "+str(addr))
@@ -65,11 +65,12 @@ def on_new_client(serversocket, clientsocket, addr):
 
         idx = msg.find("Content-Length:") + 16
         last = msg.find("\r\n", idx)
+        print(str(idx)+"-----------------------------------------------" + str(fileSize))
         fileSize = int(msg[idx: last].strip())
         idx = msg.find("\r\n\r\n") + 4
         count = len(msg) - idx
         print(">>>>>>>>>>>>>>>>>>>>server>>>>>>>>>>>>>>>>>>>>>>> \n" + msg[:idx])
-        print(str(idx)+" adn " + str(fileSize) )
+        
         print(">>>>>>>>>>>>>>>>>>>>server>>>>>>>>>>>>>>>>>>>>>>>")
         
         clientsocket.send(msg)
