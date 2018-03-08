@@ -105,7 +105,7 @@ def getManif(response, serversocket, clientsocket, throughput, toClient):
         diff = fileSize - count
         if diff < buff:
             buff = diff
-        print(diff)
+        print(buff)
     
     return manif
 
