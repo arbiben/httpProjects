@@ -110,7 +110,7 @@ def sendMan(req, serversocket, clientsocket, throughput):
     # gather info on throughput
     throughput = updateThroughput(ttl, len(response), throughput)
 
-    getResponse(response, serversocket, clientsocket, True)
+    getResponse(response, serversocket, clientsocket, throughput, True)
     
 
 # gathers the response in one file and if needed - saves it for use
