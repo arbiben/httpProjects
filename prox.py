@@ -57,7 +57,7 @@ def main():
 # the type of get request (mov, manifest, html...)
 def on_new_client(clientsocket, addr):
     global bitrates
-    global throuput
+    global throughput
 
     bitrates = []
     throughput = 10
@@ -146,7 +146,7 @@ def getResponse(response, serversocket, clientsocket, throughput, toClient):
         if diff < buff:
             buff = diff
     
-    if toClient:
+    if not toClient:
         return respose_file
 
 # gets the header of a response, parses it and returns
