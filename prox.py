@@ -109,13 +109,13 @@ def getManif(response, serversocket, clientsocket, throughput, toClient):
     return manif
 
 def getLength(response):
-    print("========================\n"+response+"\n=============================")
+    
     idx = response.find("Content-Length:") + 16
     last = response.find("\r\n", idx)
     fileSize = int(response[idx: last].strip())
     idx = response.find("\r\n\r\n") + 4
     count = len(response) - idx
-
+    print("========================\n"+response[:idx] +"\n=============================")
     return [fileSize, idx, count]
 
 def sendOther(req, serversocket, clientsocket, throughput):
