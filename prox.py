@@ -72,6 +72,7 @@ def on_new_client(serversocket, clientsocket, addr):
 
         idx = response.find("Content-Length:") + 16
         last = response.find("\r\n", idx)
+        print(response[idx: last].strip())
         fileSize = int(response[idx: last].strip())
         idx = response.find("\r\n\r\n") + 4
         count = len(response) - idx
