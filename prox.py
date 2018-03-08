@@ -101,7 +101,7 @@ def getMan(msg, serversocket):
 
 def getThroughput(ttl, b, t_curr):
     t_new = b/ttl
-    return (alpha * t_new) + t_curr(1-alpha)
+    return (alpha * t_new) + t_curr*(1-alpha)
 
 if __name__ == "__main__":
     main()
