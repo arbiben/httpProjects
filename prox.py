@@ -50,7 +50,7 @@ def on_new_client(serversocket, clientsocket, addr):
         req = clientsocket.recv(buff) # GET
         if not req:
             print("closed in \"not\" SERVER clause "+str(addr))
-                clientsocket.close()
+            clientsocket.close()
                 
         print(req+"\n==================================================")
         if req.find(".f4m") != -1:
