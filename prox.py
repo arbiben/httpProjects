@@ -47,8 +47,8 @@ def on_new_client(serversocket, clientsocket, addr):
         if msg.find(".f4m") != -1:
             msg = getMan(msg, serversocket)
 
-        # print("------------------- client -------------------\n" + msg)
-        # print("------------------- client -------------------")
+        print("------------------- client -------------------\n" + msg)
+        print("------------------- client -------------------")
         t_start = time.time()
         serversocket.send(msg)        # send to server    
         msg = serversocket.recv(buff) # from server
@@ -68,8 +68,9 @@ def on_new_client(serversocket, clientsocket, addr):
         fileSize = int(msg[idx: last].strip())
         idx = msg.find("\r\n\r\n") + 4
         count = len(msg) - idx
-        # print(">>>>>>>>>>>>>>>>>>>>server>>>>>>>>>>>>>>>>>>>>>>> \n" + msg[:idx])
-        # print(">>>>>>>>>>>>>>>>>>>>server>>>>>>>>>>>>>>>>>>>>>>>")
+        print(">>>>>>>>>>>>>>>>>>>>server>>>>>>>>>>>>>>>>>>>>>>> \n" + msg[:idx])
+        print(str(idx)+" adn " + str(fileSize) )
+        print(">>>>>>>>>>>>>>>>>>>>server>>>>>>>>>>>>>>>>>>>>>>>")
         
         clientsocket.send(msg)
 
