@@ -38,14 +38,14 @@ def main():
 
 def on_new_client(serversocket, clientsocket, addr):
     throughput = 10
-    
+    buff = 1024
+
     while True:
-        buff = 1024
         msg = clientsocket.recv(buff) # GET
         
         if msg.find(".f4m") != -1:
             print(msg)
-            msg = getMan(msg, serversocket)
+            msg = getMan(msg, serversocket, buff)
             print("=============================================")
             print(msg)
 
@@ -92,9 +92,9 @@ def on_new_client(serversocket, clientsocket, addr):
     clientsocket.close()
 
 
-def getMan(msg, serversocket):
+def getMan(msg, serversocket, buffer):
     serversocket.send(msg)
-    manif = serversocket.recv()
+    manif = serversocket.recv(buffer)
 
     parsed = msg.split(".f4m")
     msg = parsed[0] + "_nolist.f4m"+parsed[1]
