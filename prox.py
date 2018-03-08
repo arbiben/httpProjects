@@ -1,13 +1,9 @@
-import sys
-import socket
-import thread
-import select
-import time
+#!/usr/bin/env python
+import sys, socket ,thread, time, select
 import xml.etree.ElementTree as xml
 
 if len(sys.argv) != 3:
     print("<alpha> <port>")
-
 
 #host = '127.0.0.1'
 host = '3.0.0.1'
