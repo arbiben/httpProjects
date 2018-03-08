@@ -183,10 +183,9 @@ def sendOther(req, serversocket, clientsocket, throughput):
 
 # reads the manifest file and adds bitrates to a list
 def handleManif(m):
-    print(m)
-    # manif = xmlReader.fromstring(m)
-    # for child in manif:
-    #     print child.tag, child.attrib
+    manif = xmlReader.fromstring(m)
+    for child in manif:
+        print child.tag, child.attrib
 
 
 
