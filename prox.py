@@ -5,7 +5,7 @@ import xml.etree.ElementTree as xml
 # <log > <alpha > <listen-port > <fake-ip > <web-server-ip >
 
 
-if len(sys.argv) != 3:
+if len(sys.argv) != 4:
     print("<alpha> <port> <web-server>")
     sys.exit()
 
