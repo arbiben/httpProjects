@@ -3,15 +3,14 @@ import sys, socket ,thread, time, select
 import xml.etree.ElementTree as xml
 
 # <log > <alpha > <listen-port > <fake-ip > <web-server-ip >
-
-
 if len(sys.argv) != 4:
     print("<alpha> <port> <web-server>")
     sys.exit()
 
-
 def main():
     global alpha
+    global buffSize
+    buffSize = 1024
     # log = sys.argv[1]
     alpha = float(sys.argv[1])
     client_port = int(sys.argv[2])
@@ -46,67 +45,81 @@ def main():
 def on_new_client(serversocket, clientsocket, addr):
     throughput = 10
     while True:
-        buff = 1024
+        buff = buffSize
         req = clientsocket.recv(buff) # GET
         
         if not req:
             print("closed in \"not\" SERVER clause "+str(addr))
             clientsocket.close()
                 
-        print(req+"\n==================================================")
         if req.find(".f4m") != -1:
             if sendMan(req, serversocket, clientsocket, throughput) == -1:
                 print("closed in \"not\" SERVER clause "+str(addr))
                 clientsocket.close()
 
         else:
-            sendOther(req, serversocket, clientsocket, throughput)
-    
+            if sendOther(req, serversocket, clientsocket, throughput) == -1:
+                print("closed in \"not\" SERVER clause "+str(addr))
+                clientsocket.close()
+
     print("closed socket with "+str(addr))
     clientsocket.close()
 
-
+# get the manifest file
 def sendMan(req, serversocket, clientsocket, throughput):
-    t_start = time.time()
-    # get the manifest file and send the nolist one
-    serversocket.send(req)
-    manif = ''
-    temp = serversocket.recv(1024)
-
-    ttl = time.time()-t_start
+    buff = buffSize
     
-    while (temp != ''):
-        print(temp)
-        t_start = time.time()
-        
-        manif += temp
-        temp = serversocket.recv(1024)
+    t_start = time.time()
+    serversocket.send(req)
+    response = serversocket.recv(buff)
+    ttl = time.time()-t_start
 
-        ttl = time.time()-t_start
-
+    manif = getManif(response, serversocket, clientsocket, throughput, False)
+    
     parsed = req.split(".f4m")
     req = parsed[0] + "_nolist.f4m"+parsed[1]
-    
-    t_start = time.time()
-    # appended nolist and send to server 
     serversocket.send(req)
-    othermanif = ''
-    temp = serversocket.recv(1024)
-    ttl = time.time()-t_start
+    response = serversocket.recv(buff)
+    getManif(response, serversocket, clientsocket, throughput, True)
     
-    while (temp != ''):
-        print("in loop 2")
-        t_start = time.time()
-        
-        clientsocket.send(temp)
-        othermanif += temp
-        temp = serversocket.recv(1024)
-    
-        ttl = time.time()-t_start
 
+def getManif(response, serversocket, clientsocket, throughput, toClient):
+    buff = buffSize
+    fileSize, idx, count = getLength(response)
+    manif = response[idx:]
+    
+    if toClient:
+        clientsocket.send(response)
+
+    diff = fileSize - count
+    if diff < buff:
+        buff = diff
+
+    while diff > 0:
+        temp = serversocket.recv(buff)
+        manif += temp
+        count += len(response)
+        if toClient:
+            clientsocket.send(temp)
+
+        diff = fileSize - count
+        if diff < buff:
+            buff = diff
+    
+    return manif
+
+def getLength(response):
+
+    idx = response.find("Content-Length:") + 16
+    last = response.find("\r\n", idx)
+    fileSize = int(response[idx: last].strip())
+    idx = response.find("\r\n\r\n") + 4
+    count = len(response) - idx
+
+    return [fileSize, idx, count]
 
 def sendOther(req, serversocket, clientsocket, throughput):
-    buff = 1024
+    buff = buffSize
     t_start = time.time()
     serversocket.send(req)        # send to server
     response = serversocket.recv(buff)  # from server
@@ -116,31 +129,11 @@ def sendOther(req, serversocket, clientsocket, throughput):
 
     if not response:
         return -1
-    
-    idx = response.find("Content-Length:") + 16
-    last = response.find("\r\n", idx)
-    fileSize = int(response[idx: last].strip())
-    idx = response.find("\r\n\r\n") + 4
-    count = len(response) - idx
 
-    clientsocket.send(response)
-
-    diff = fileSize - count
-    if diff < buff:
-        buff = diff
-
-    while diff > 0:
-        response = serversocket.recv(buff)
-        clientsocket.send(response)
-        count += len(response)
-        
-
-        diff = fileSize - count
-        if diff < buff:
-            buff = diff
-        print(diff)
+    getManif(response, serversocket, clientsocket, throughput, True)
     
     return 0
+
 
 def getThroughput(ttl, b, t_curr):
     t_new = b/ttl
