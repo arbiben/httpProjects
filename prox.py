@@ -104,6 +104,8 @@ def getMan(msg, serversocket, buffer):
 
     parsed = msg.split(".f4m")
     msg = parsed[0] + "_nolist.f4m"+parsed[1]
+    print(msg)
+    print("-----  int getMan -------")
     return msg 
 
 def getThroughput(ttl, b, t_curr):
