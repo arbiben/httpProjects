@@ -103,5 +103,5 @@ def getThroughput(ttl, b, t_curr):
     return (alpha * t_new) + t_curr(1-alpha)
 
 if __name__ == "__main__":
-    mein()
+    main()
   #  /vod/big_buck_bunny.f4m
