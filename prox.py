@@ -28,13 +28,6 @@ def main():
     server_ip = sys.argv[4]
     server_port = 8080
 
-    
-    # serv = socket.socket()
-    # serv.connect((server_ip, server_port))
-    # # serv2 = socket.socket()
-    # # serv2.connect(('4.0.0.1', server_port))
-    # print("conneted to server... \n")
-
     s = socket.socket()
     s.bind(('', client_port))
     s.listen(1)
@@ -191,6 +184,7 @@ def handleManif(m):
 
 
 def getThroughput(ttl, b, t_curr):
+    b = b/1000.0
     t_new = b/ttl
     print((alpha * t_new) + t_curr*(1-alpha))
     return (alpha * t_new) + t_curr*(1-alpha)
@@ -198,3 +192,4 @@ def getThroughput(ttl, b, t_curr):
 if __name__ == "__main__":
     main()
   #  /vod/big_buck_bunny.f4m
+  # calculate difference between current bitrate and next bitrate
