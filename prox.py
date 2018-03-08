@@ -45,9 +45,8 @@ def main():
 
 def on_new_client(serversocket, clientsocket, addr):
     throughput = 10
-    buff = 1024
-
     while True:
+        buff = 1024
         req = clientsocket.recv(buff) # GET
         
         if req.find(".f4m") != -1:
