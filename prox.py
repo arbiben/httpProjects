@@ -7,6 +7,10 @@ if len(sys.argv) != 5:
     print("<alpha> <port> <fake-ip> <web-server>")
     sys.exit()
 
+# fake ip's
+# 1.0.0.1
+# 2.0.0.1
+
 def main():
     global alpha
     global buffSize
@@ -42,7 +46,7 @@ def main():
         #thread.start_new_thread(on_new_client, (serv, c, addr))
         
         args = (c)
-        t = Thread(target=on_new_client, args=args)
+        t = threading.Thread(target=on_new_client, args=args)
         t.start()
         t.join()
         # create a thread object 
