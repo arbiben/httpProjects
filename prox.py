@@ -182,7 +182,7 @@ def handleManif(m):
             bitrates.append(int(child.attrib['bitrate']))
 
 def getThroughput(ttl, b):
-    b = b/1000.0
+    b = (8*b)/1000.0
     t_new = b/ttl
     print((alpha * t_new) + throughput*(1-alpha))
     # this is in kilo bits
