@@ -126,7 +126,7 @@ def sendOther(req, serversocket, clientsocket, throughput):
         response = serversocket.recv(buff)
         clientsocket.send(response)
         count += len(response)
-        print("response")
+        print(diff)
 
         diff = fileSize - count
         if diff < buff:
