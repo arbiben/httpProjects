@@ -27,6 +27,7 @@ def main():
     fake_ip = sys.argv[3]
     server_ip = sys.argv[4]
     server_port = 8080
+
     
     # serv = socket.socket()
     # serv.connect((server_ip, server_port))
@@ -55,18 +56,23 @@ def main():
 # proxy and server - reads a get request and resposes based on
 # the type of get request (mov, manifest, html...)
 def on_new_client(clientsocket, addr):
+    global bitrates
+    global throuput
+
+    bitrates = []
+    throughput = 10
+
     serversocket = socket.socket()
     serversocket.bind((fake_ip, 0))
     serversocket.connect((server_ip, server_port))
     print("connected to server")
 
-    throughput = 10
     while True:
         buff = buffSize
         req = clientsocket.recv(buff) # GET
         
         if not req:
-            print("closed in \"not\" CLIENT clause")
+            print("CLIENT closed socket")
             break
                 
         if req.find(".f4m") != -1:
@@ -95,10 +101,11 @@ def sendMan(req, serversocket, clientsocket, throughput):
     
     # gather info on throughput
     throughput = getThroughput(ttl, len(response), throughput)
-    print("throughput is " + str(throughput))
+    # print("throughput is " + str(throughput))
     #contains the manifest file we need
     manif = getResponse(response, serversocket, clientsocket, throughput, False)
-    
+    handleManif(manif)
+
     #adjust request and resend to serever and response to client
     parsed = req.split(".f4m")
     new_req = parsed[0] + "_nolist.f4m"+parsed[1]
@@ -110,7 +117,7 @@ def sendMan(req, serversocket, clientsocket, throughput):
 
     # gather info on throughput
     throughput = getThroughput(ttl, len(response), throughput)
-    print("throughput is " + str(throughput))
+    # print("throughput is " + str(throughput))
     getResponse(response, serversocket, clientsocket, throughput, True)
     
 
@@ -166,13 +173,20 @@ def sendOther(req, serversocket, clientsocket, throughput):
 
     # gather info on throughput
     throughput = getThroughput(ttl, len(response), throughput)
-    print("throughput is " + str(throughput))
+    # print("throughput is " + str(throughput))
     if not response:
         return -1
 
     # call method to handle the transfer of the packets
     getResponse(response, serversocket, clientsocket, throughput, True)
     return 0
+
+# reads the manifest file and adds bitrates to a list
+def handleManif(m):
+    manif = xml.fromstring(m)
+    for child in manif:
+        print child.tag, child.attrib
+
 
 
 def getThroughput(ttl, b, t_curr):
