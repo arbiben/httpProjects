@@ -93,7 +93,7 @@ def sendMan(req, serversocket, clientsocket):
     ttl = time.time()-t_start
     
     # gather info on throughput
-    throughput = getThroughput(ttl, len(response))
+    updateThroughput(ttl, len(response))
 
     #contains the manifest file we need
     manif = getResponse(response, serversocket, clientsocket, False)
@@ -109,7 +109,7 @@ def sendMan(req, serversocket, clientsocket):
     ttl = time.time()-t_start
 
     # gather info on throughput
-    throughput = getThroughput(ttl, len(response))
+    updateThroughput(ttl, len(response))
 
     getResponse(response, serversocket, clientsocket, True)
     
@@ -120,7 +120,8 @@ def getResponse(response, serversocket, clientsocket, toClient):
     buff = buffSize
     fileSize, idx, count = getLength(response)
     respose_file = response[idx:]
-    
+    print("==========header===============\n" + response[:idx] + "\n===========================")
+
     if toClient:
         clientsocket.send(response)
 
@@ -165,7 +166,7 @@ def sendOther(req, serversocket, clientsocket):
     ttl = time.time()-t_start
 
     # gather info on throughput
-    throughput = getThroughput(ttl, len(response))
+    updateThroughput(ttl, len(response))
 
     if not response:
         return -1
@@ -181,13 +182,13 @@ def handleManif(m):
         if 'bitrate' in child.attrib:
             bitrates.append(int(child.attrib['bitrate']))
 
-def getThroughput(ttl, b):
+def updateThroughput(ttl, b):
     b = (8*b)/1000.0
     t_new = b/ttl
-    print((alpha * t_new) + throughput*(1-alpha))
+    throughput = ((alpha * t_new) + throughput*(1-alpha))
     # this is in kilo bits
     # 4000 Kbits = 0.5 Mbyte
-    return (alpha * t_new) + throughput*(1-alpha)
+    # find a way to make the correct calculation
 
 if __name__ == "__main__":
     main()
