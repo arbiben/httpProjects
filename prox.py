@@ -76,7 +76,7 @@ def on_new_client(serversocket, clientsocket, addr):
         fileSize = int(response[idx: last].strip())
         idx = response.find("\r\n\r\n") + 4
         count = len(response) - idx
-        print(">>>>>>>>>>>>>>>>>>>>server>>>>>>>>>>>>>>>>>>>>>>> \n" + response[:idx])
+        print(">>>>>>>>>>>>>>>>>>>>server>>>>>>>>>>>>>>>>>>>>>>> \n" + response)
         print(">>>>>>>>>>>>>>>>>>>>server>>>>>>>>>>>>>>>>>>>>>>>")
         
         clientsocket.send(response)
@@ -89,6 +89,7 @@ def on_new_client(serversocket, clientsocket, addr):
             response = serversocket.recv(buff)
             clientsocket.send(response)
             count += len(response)
+            print(response)
 
             diff = fileSize - count
             if diff < buff:
