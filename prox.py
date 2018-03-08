@@ -2,38 +2,39 @@
 import sys, socket ,thread, time, select
 import xml.etree.ElementTree as xml
 
-if len(sys.argv) != 3:
-    print("<alpha> <port>")
+def main():
+    if len(sys.argv) != 3:
+        print("<alpha> <port>")
 
-#host = '127.0.0.1'
-host = '3.0.0.1'
-host2 = '4.0.0.1'
-sPort = int(sys.argv[2])
-cPort = 8080
-# fakeIP = 
-alpha = float(sys.argv[1])
+    #host = '127.0.0.1'
+    host = '3.0.0.1'
+    host2 = '4.0.0.1'
+    sPort = int(sys.argv[2])
+    cPort = 8080
+    # fakeIP = 
+    alpha = float(sys.argv[1])
 
 
-# <log > <alpha > <listen-port > <fake-ip > <web-server-ip >
-serv = socket.socket()
-serv.connect((host, cPort))
-print("conneted to 3.0.0.1 server ")
+    # <log > <alpha > <listen-port > <fake-ip > <web-server-ip >
+    serv = socket.socket()
+    serv.connect((host, cPort))
+    print("conneted to 3.0.0.1 server ")
 
-serv2 = socket.socket()
-serv2.connect((host2, cPort))
-print("conneted to 4.0.0.1 server \n")
+    serv2 = socket.socket()
+    serv2.connect((host2, cPort))
+    print("conneted to 4.0.0.1 server \n")
 
-s = socket.socket()
-s.bind((host, sPort))
-s.listen(5)
+    s = socket.socket()
+    s.bind((host, sPort))
+    s.listen(5)
 
-while True:
-    c, addr = s.accept()
-    print("connection from: " + str(addr)+"\n")
-    thread.start_new_thread(on_new_client, (serv, c, addr))
-    # create a thread obj, 
-c.close()
-serv.close()
+    while True:
+        c, addr = s.accept()
+        print("connection from: " + str(addr)+"\n")
+        thread.start_new_thread(on_new_client, (serv, c, addr))
+        # create a thread obj, 
+    c.close()
+    serv.close()
 
 def on_new_client(serversocket, clientsocket, addr):
     throughput = 0
@@ -101,4 +102,6 @@ def getThroughput(ttl, b, t_curr):
     t_new = b/ttl
     return (alpha * t_new) + t_curr(1-alpha)
 
+if __name__ == "__main__":
+    mein()
   #  /vod/big_buck_bunny.f4m
