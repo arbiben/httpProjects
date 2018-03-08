@@ -56,7 +56,7 @@ def on_new_client(serversocket, clientsocket, addr):
 
         throughput = getThroughput(ttl, len(msg), throughput)
 
-         print(throughput)
+        print(throughput)
         
         if not msg:
             print("closed in \"not\" SERVER clause "+str(addr))
