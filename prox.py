@@ -5,9 +5,10 @@ import select
 import time
 import xml.etree.ElementTree as xml
 
-if len(argv) != 3:
+if len(sys.argv) != 3:
     print("<alpha> <port>")
-    return
+
+
 #host = '127.0.0.1'
 host = '3.0.0.1'
 host2 = '4.0.0.1'
