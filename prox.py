@@ -186,7 +186,7 @@ def handleManif(m):
     manif = xmlReader.fromstring(m)
     for child in manif:
         if 'bitrate' in child.attrib:
-            print child.attrib
+            print child.attrib['bitrate']
 
 
 
