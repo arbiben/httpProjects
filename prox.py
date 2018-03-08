@@ -101,7 +101,7 @@ def sendMan(req, serversocket, clientsocket, throughput):
     
     # gather info on throughput
     throughput = getThroughput(ttl, len(response), throughput)
-    # print("throughput is " + str(throughput))
+
     #contains the manifest file we need
     manif = getResponse(response, serversocket, clientsocket, throughput, False)
     handleManif(manif)
@@ -117,7 +117,7 @@ def sendMan(req, serversocket, clientsocket, throughput):
 
     # gather info on throughput
     throughput = getThroughput(ttl, len(response), throughput)
-    # print("throughput is " + str(throughput))
+
     getResponse(response, serversocket, clientsocket, throughput, True)
     
 
@@ -173,7 +173,7 @@ def sendOther(req, serversocket, clientsocket, throughput):
 
     # gather info on throughput
     throughput = getThroughput(ttl, len(response), throughput)
-    # print("throughput is " + str(throughput))
+
     if not response:
         return -1
 
@@ -186,12 +186,13 @@ def handleManif(m):
     manif = xmlReader.fromstring(m)
     for child in manif:
         if 'bitrate' in child.attrib:
-            print child.attrib['bitrate']
+            bitrates.append(int(child.attrib['bitrate']))
 
 
 
 def getThroughput(ttl, b, t_curr):
     t_new = b/ttl
+    print((alpha * t_new) + t_curr*(1-alpha))
     return (alpha * t_new) + t_curr*(1-alpha)
 
 if __name__ == "__main__":
