@@ -185,7 +185,8 @@ def sendOther(req, serversocket, clientsocket, throughput):
 def handleManif(m):
     manif = xmlReader.fromstring(m)
     for child in manif:
-        print child.tag, child.attrib
+        if 'bitrate' in child.attrib:
+            print child.attrib
 
 
 
