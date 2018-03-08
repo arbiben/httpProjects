@@ -66,18 +66,18 @@ def on_new_client(clientsocket, addr):
         req = clientsocket.recv(buff) # GET
         
         if not req:
-            print("closed in \"not\" SERVER clause")
-            clientsocket.close()
+            print("closed in \"not\" CLIENT clause")
+            break
                 
         if req.find(".f4m") != -1:
             if sendMan(req, serversocket, clientsocket, throughput) == -1:
                 print("closed in \"not\" SERVER clause ")
-                clientsocket.close()
+                break
 
         else:
             if sendOther(req, serversocket, clientsocket, throughput) == -1:
                 print("closed in \"not\" SERVER clause ")
-                clientsocket.close()
+                break
 
     print("closed sockets")
     clientsocket.close()
