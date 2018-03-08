@@ -109,7 +109,7 @@ def getManif(response, serversocket, clientsocket, throughput, toClient):
     return manif
 
 def getLength(response):
-
+    print("========================\n"+respnse+"\n=============================")
     idx = response.find("Content-Length:") + 16
     last = response.find("\r\n", idx)
     fileSize = int(response[idx: last].strip())
