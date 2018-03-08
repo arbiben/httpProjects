@@ -119,7 +119,7 @@ def getResponse(response, serversocket, clientsocket, throughput, toClient):
     buff = buffSize
     fileSize, idx, count = getLength(response)
     respose_file = response[idx:]
-    print("==========header===============\n" + response[:idx] + "\n===========================")
+    #print("==========header===============\n" + response[:idx] + "\n===========================")
 
     if toClient:
         clientsocket.send(response)
@@ -158,7 +158,7 @@ def getLength(response):
 # if the response is not manifest it just sends it to the client
 
 def sendOther(req, serversocket, clientsocket, throughput):
-    # print("========================\n" + req + "\n=============================")
+    print("========================\n" + req + "\n=============================")
     buff = buffSize
     t_start = time.time()
     serversocket.send(req)        # send to server
