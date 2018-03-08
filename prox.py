@@ -48,6 +48,7 @@ def on_new_client(serversocket, clientsocket, addr):
     while True:
         buff = 1024
         req = clientsocket.recv(buff) # GET
+        
         if not req:
             print("closed in \"not\" SERVER clause "+str(addr))
             clientsocket.close()
@@ -65,16 +66,17 @@ def on_new_client(serversocket, clientsocket, addr):
     clientsocket.close()
 
 
-def sendMan(msg, serversocket, clientsocket, throughput):
+def sendMan(req, serversocket, clientsocket, throughput):
     t_start = time.time()
     # get the manifest file and send the nolist one
-    serversocket.send(msg)
+    serversocket.send(req)
     manif = ''
     temp = serversocket.recv(1024)
-    
+
     ttl = time.time()-t_start
     
     while (temp != ''):
+        print("in loop 1")
         t_start = time.time()
         
         manif += temp
@@ -82,17 +84,18 @@ def sendMan(msg, serversocket, clientsocket, throughput):
 
         ttl = time.time()-t_start
 
-    parsed = msg.split(".f4m")
-    msg = parsed[0] + "_nolist.f4m"+parsed[1]
+    parsed = req.split(".f4m")
+    req = parsed[0] + "_nolist.f4m"+parsed[1]
     
     t_start = time.time()
     # appended nolist and send to server 
-    serversocket.send(msg)
+    serversocket.send(req)
     othermanif = ''
     temp = serversocket.recv(1024)
     ttl = time.time()-t_start
     
     while (temp != ''):
+        print("in loop 2")
         t_start = time.time()
         
         clientsocket.send(temp)
@@ -114,7 +117,7 @@ def sendOther(req, serversocket, clientsocket, throughput):
     if not response:
         return -1
     
-    print(response+"\n=================================================================")
+    print(response)
     idx = response.find("Content-Length:") + 16
     last = response.find("\r\n", idx)
     fileSize = int(response[idx: last].strip())
