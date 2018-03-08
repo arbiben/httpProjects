@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import sys, socket ,thread, time, select, threading
+import sys, socket ,thread, threading, time, select
 import xml.etree.ElementTree as xml
 
 # <log > <alpha > <listen-port > <fake-ip > <web-server-ip >
@@ -84,7 +84,7 @@ def on_new_client(clientsocket, addr):
     serversocket.close()
 
 
-# get the manifest file
+# get the manifest file and send the nolist manifest
 def sendMan(req, serversocket, clientsocket, throughput):
     buff = buffSize
     print("========begin=========\n" + req + "\n============end============")
@@ -92,13 +92,25 @@ def sendMan(req, serversocket, clientsocket, throughput):
     serversocket.send(req)
     response = serversocket.recv(buff)
     ttl = time.time()-t_start
-
+    
+    # gather info on throughput
+    throughput = getThroughput(ttl, len(response), throughput)
+    print("throughput is " + str(throughput))
+    #contains the manifest file we need
     manif = getResponse(response, serversocket, clientsocket, throughput, False)
     
+    #adjust request and resend to serever and response to client
     parsed = req.split(".f4m")
     new_req = parsed[0] + "_nolist.f4m"+parsed[1]
+    
+    t_start = time.time()
     serversocket.send(new_req)
     response = serversocket.recv(buff)
+    ttl = time.time()-t_start
+
+    # gather info on throughput
+    throughput = getThroughput(ttl, len(response), throughput)
+    print("throughput is " + str(throughput))
     getResponse(response, serversocket, clientsocket, throughput, True)
     
 
@@ -145,18 +157,20 @@ def getLength(response):
 
 # if the response is not manifest it just sends it to the client
 def sendOther(req, serversocket, clientsocket, throughput):
-    print("========================\n" + req + "\n=============================")
+    # print("========================\n" + req + "\n=============================")
     buff = buffSize
     t_start = time.time()
     serversocket.send(req)        # send to server
     response = serversocket.recv(buff)  # from server
     ttl = time.time()-t_start
 
+    # gather info on throughput
     throughput = getThroughput(ttl, len(response), throughput)
-
+    print("throughput is " + str(throughput))
     if not response:
         return -1
 
+    # call method to handle the transfer of the packets
     getResponse(response, serversocket, clientsocket, throughput, True)
     return 0
 
