@@ -2,36 +2,43 @@
 import sys, socket ,thread, time, select
 import xml.etree.ElementTree as xml
 
+# <log > <alpha > <listen-port > <fake-ip > <web-server-ip >
+
+
+if len(sys.argv) != 3:
+    print("<alpha> <port> <web-server>")
+    sys.exit()
+
+
 def main():
-    if len(sys.argv) != 3:
-        print("<alpha> <port>")
-
-    #host = '127.0.0.1'
-    host = '3.0.0.1'
-    host2 = '4.0.0.1'
-    sPort = int(sys.argv[2])
-    cPort = 8080
-    # fakeIP = 
     global alpha
+    # log = sys.argv[1]
     alpha = float(sys.argv[1])
-
-    # <log > <alpha > <listen-port > <fake-ip > <web-server-ip >
-
+    client_port = int(sys.argv[2])
+    # fakeIP = sys.argv
+    server_ip = sys.argv[3]
+    server_port = 8080
+    
     serv = socket.socket()
-    serv.connect((host, cPort))
-
-    serv2 = socket.socket()
-    serv2.connect((host2, cPort))
-    print("conneted to servers... \n")
+    serv.connect((server_ip, server_port))
+    # serv2 = socket.socket()
+    # serv2.connect(('4.0.0.1', server_port))
+    print("conneted to server... \n")
 
     s = socket.socket()
-    s.bind((host, sPort))
-    s.listen(5)
+    s.bind((server_ip, client_port))
+    s.listen(1)
+    print("ready to connect")
 
     while True:
         c, addr = s.accept()
         print("connection from: " + str(addr)+"\n")
         thread.start_new_thread(on_new_client, (serv, c, addr))
+        
+        # args = (serv, c, addr)
+        # t = Thread(target=on_new_client, args=args)
+        # t.start()
+        # t.join()
         # create a thread object 
     c.close()
     serv.close()
@@ -41,48 +48,47 @@ def on_new_client(serversocket, clientsocket, addr):
     buff = 1024
 
     while True:
-        msg = clientsocket.recv(buff) # GET
+        req = clientsocket.recv(buff) # GET
         
-        if msg.find(".f4m") != -1:
-            print(msg)
-            msg = getMan(msg, serversocket, buff)
+        if req.find(".f4m") != -1:
+            print(req)
+            req = getMan(req, serversocket, buff)
             print("=============================================")
-            print(msg)
+            print(req)
 
-        # print("------------------- client -------------------\n" + msg)
-        # print("------------------- client -------------------")
+        print("------------------- client -------------------\n" + req)
+        print("------------------- client -------------------")
         t_start = time.time()
-        serversocket.send(msg)        # send to server    
-        msg = serversocket.recv(buff) # from server
+        serversocket.send(req)        # send to server    
+        response = serversocket.recv(buff) # from server
         ttl = time.time()-t_start
 
-        throughput = getThroughput(ttl, len(msg), throughput)
+        throughput = getThroughput(ttl, len(response), throughput)
         print("throughput is: " + str(throughput))
         
-        if not msg:
+        if not response:
             print("closed in \"not\" SERVER clause "+str(addr))
             clientsocket.close()
             return
 
-        idx = msg.find("Content-Length:") + 16
-        last = msg.find("\r\n", idx)
-        fileSize = int(msg[idx: last].strip())
-        idx = msg.find("\r\n\r\n") + 4
-        count = len(msg) - idx
-        # print(">>>>>>>>>>>>>>>>>>>>server>>>>>>>>>>>>>>>>>>>>>>> \n" + msg[:idx])
+        idx = response.find("Content-Length:") + 16
+        last = response.find("\r\n", idx)
+        fileSize = int(response[idx: last].strip())
+        idx = response.find("\r\n\r\n") + 4
+        count = len(response) - idx
+        print(">>>>>>>>>>>>>>>>>>>>server>>>>>>>>>>>>>>>>>>>>>>> \n" + response[:idx])
+        print(">>>>>>>>>>>>>>>>>>>>server>>>>>>>>>>>>>>>>>>>>>>>")
         
-        # print(">>>>>>>>>>>>>>>>>>>>server>>>>>>>>>>>>>>>>>>>>>>>")
-        
-        clientsocket.send(msg)
+        clientsocket.send(response)
 
         diff = fileSize - count
         if diff < buff:
             buff = diff
         
         while diff>0:
-            msg = serversocket.recv(buff)
-            clientsocket.send(msg)
-            count+= len(msg)
+            response = serversocket.recv(buff)
+            clientsocket.send(response)
+            count += len(response)
 
             diff = fileSize - count
             if diff < buff:
