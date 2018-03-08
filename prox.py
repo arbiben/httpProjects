@@ -68,7 +68,7 @@ def on_new_client(serversocket, clientsocket, addr):
 # get the manifest file
 def sendMan(req, serversocket, clientsocket, throughput):
     buff = buffSize
-    
+    print("========================\n" + req + "\n=============================")
     t_start = time.time()
     serversocket.send(req)
     response = serversocket.recv(buff)
@@ -84,6 +84,7 @@ def sendMan(req, serversocket, clientsocket, throughput):
     
 
 def getManif(response, serversocket, clientsocket, throughput, toClient):
+    
     buff = buffSize
     fileSize, idx, count = getLength(response)
     manif = response[idx:]
@@ -115,10 +116,11 @@ def getLength(response):
     fileSize = int(response[idx: last].strip())
     idx = response.find("\r\n\r\n") + 4
     count = len(response) - idx
-    print("========================\n"+response[:idx] +"\n=============================")
+    
     return [fileSize, idx, count]
 
 def sendOther(req, serversocket, clientsocket, throughput):
+    print("========================\n" + req + "\n=============================")
     buff = buffSize
     t_start = time.time()
     serversocket.send(req)        # send to server
