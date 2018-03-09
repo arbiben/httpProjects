@@ -50,6 +50,7 @@ def updateTput(ttl, b, tp):
             print(bit)
             if bit > maxBit:
                 tp[3] = prev
+            prev = bit
         tp[3] = prev
     
     return tp
