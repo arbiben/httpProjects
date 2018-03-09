@@ -150,8 +150,6 @@ def sendVid(req, serversocket, clientsocket, throughput):
 
 # if the response is not manifest it just sends it to the client
 def sendOther(req, serversocket, clientsocket, throughput):
-    print("========================\n" + req +
-          "\n=============================")
     buff = buffSize
     t_start = time.time()
     serversocket.send(req)        # send to server
@@ -221,20 +219,18 @@ def handleManif(m):
 
 
 def getBitrate(throughput):
-
+    prev = bitrates[0]
     for bit in bitrates:
-        if throughput <= bit:
-            return bit
+        if bit > throughput:
+            return prev
+        prev = bit
 
-    return bitrates[len(bitrates)-1]
+    return prev
 
     
-
-
 def updateThroughput(ttl, b, t_curr):
-    print(ttl)
     t_new = (0.008*b)/ttl
-    # print((alpha * t_new) + t_curr*(1-alpha))
+    print((alpha * t_new) + t_curr*(1-alpha))
     return((alpha * t_new) + t_curr*(1-alpha))
     # this is in kilo bits
     # 4000 Kbits = 0.5 Mbyte
