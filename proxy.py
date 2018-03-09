@@ -47,6 +47,7 @@ def updateTput(ttl, b, tp):
         print("max is - "+ str(maxBit))
         prev = tp[4][0]
         for bit in tp[4]:
+            print(bit)
             if bit > maxBit:
                 tp[3] = prev
         tp[3] = prev
