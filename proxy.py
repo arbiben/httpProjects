@@ -33,7 +33,7 @@ def isVid(req):
     firstLine = req.split('\n')[0]
     return firstLine.find("Seg") != -1
 
-#tp = [tput, tput_emwa, tput_count, bitrate]
+#tp = [tput, tput_emwa, tput_count, br, bitrates]
 # update throughput and bitrate
 def updateTput(t_end, ttl, b, tp):
     t_new = (b*0.008)/ttl
@@ -41,11 +41,11 @@ def updateTput(t_end, ttl, b, tp):
     tp[1] = (tp[1]*tp[2] + tp[0])/(1+tp[2])
     tp[2] += 1
     
-    if len(bitrates) != 0:
+    if len(tp[4]) != 0:
         maxBit = tp[1]/1.5
         
-        prev = bitrates[0]
-        for bit in bitrates:
+        prev = tp[4][0]
+        for bit in tp[4]:
             if bit > maxBit:
                 tp[3] = prev
             prev = bit
