@@ -60,7 +60,7 @@ def updateTput(t_end, ttl, b, tp):
 def getFromServer(serversocket, clientsocket, req, tp, send):
     t_start = time.time()
     serversocket.send(req)
-    res = serversocket.recv()
+    res = serversocket.recv(buffSize)
     t_end = time.time()
     ttl = t_end - t_start
 
