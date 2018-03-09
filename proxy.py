@@ -109,7 +109,7 @@ def getFromServer(serversocket, clientsocket, req, tp, send):
 
 # extract information from manifest file
 def handleManif(m):
-    idx = m.find("\r\n\r\n")
+    idx = m.find("\r\n\r\n")+4
     print(m[idx:])
     manif = xmlReader.fromstring(m[idx:])
     for child in manif:
