@@ -14,7 +14,7 @@ client_port = int(sys.argv[3])
 fake_ip = sys.argv[4]
 server_ip = sys.argv[5]
 log = open(log_file, "w")
-
+bbrr = [10, 100, 500, 1000]
 
 #listening socket
 server_port = 8080
@@ -50,7 +50,7 @@ def updateTput(ttl, b, tp):
             prev = bit
         tp[3] = prev
     else:
-        tp[3] = 10
+        tp[3] = tp[4][0]
     return tp
         
 #tp = [tput, tput_emwa, tput_count, bitrate]
@@ -120,7 +120,7 @@ def on_new_client(clientsocket, addr):
     # globals for connections
     global log
 
-    br = 10
+    br = 0
     bitrates = []
     tput = 0
     tput_emwa = 0
@@ -157,6 +157,8 @@ def on_new_client(clientsocket, addr):
             dummy, tp = getFromServer(serversocket, clientsocket, new_req, tp, True)
 
         elif isVid(req):
+            if len(tp[4]) == 0:
+                tp[4] = bbrr[:]
             firstLine = req.split('\n')[0]
             r = re.search('^GET /vod/(.+?)Seg', firstLine)
             prev_bit = str(r.group(1))
