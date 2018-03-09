@@ -62,6 +62,8 @@ def getFromServer(serversocket, clientsocket, req, tp, send):
     ttl = t_end - t_start
     tp = updateTput(ttl, len(res), tp)
     
+    print(req)
+    
     if not res:
         return -1, tp
 
@@ -73,11 +75,12 @@ def getFromServer(serversocket, clientsocket, req, tp, send):
     
     # packet info
     fileSize = int((res.split("Content-Length: ")[1]).split("\n")[0])
+    print(fileSize)
     idx = res.find("\r\n\r\n") + 4
     res_file = res[idx:]
     count = len(res) - idx
     diff = fileSize - count
-    buff = buffSize if diff < buffSize else diff
+    buff = buffSize if diff > buffSize else diff
 
     if send:
         clientsocket.send(res)
@@ -94,7 +97,7 @@ def getFromServer(serversocket, clientsocket, req, tp, send):
 
         count += len(res)
         diff = fileSize - count
-        buff = buffSize if diff < buffSize else diff
+        buff = buff if diff > buff else diff
 
     # if the packet needs to be returned
     if not send:
