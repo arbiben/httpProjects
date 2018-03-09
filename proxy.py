@@ -36,7 +36,7 @@ def isVid(req):
 #tp = [tput, tput_emwa, tput_count, br, bitrates]
 # update throughput and bitrate
 def updateTput(ttl, b, tp):
-    t_new = (b*0.008)/ttl
+    t_new = (b*0.0008)/(ttl)
     tp[0] = (alpha * t_new) + (1 - alpha) * tp[0]
     tp[1] = (tp[1]*tp[2] + tp[0])/(1+tp[2])
     tp[2] += 1
@@ -75,7 +75,9 @@ def getFromServer(serversocket, clientsocket, req, tp, send):
     
     # packet info
     fileSize = int((res.split("Content-Length: ")[1]).split("\n")[0])
+    print(res)
     print(fileSize)
+    print("===============================")
     idx = res.find("\r\n\r\n") + 4
     res_file = res[idx:]
     count = len(res) - idx
