@@ -102,7 +102,7 @@ def getFromServer(serversocket, clientsocket, req, tp, send):
     if not send:
         return res_file, tp
     # otherwise
-    return -1, tp
+    return 0, tp
 
 # extract information from manifest file
 def handleManif(m):
