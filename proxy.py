@@ -62,7 +62,8 @@ def getFromServer(serversocket, clientsocket, req, tp, send):
     t_end = time.time()
     ttl = t_end - t_start
     tp = updateTput(ttl, len(res), tp)
-    
+    print("=============== req =================\n"+req)
+    print("=============== respons =============\n"+res)
     if not res:
         return -1, tp
 
@@ -136,7 +137,7 @@ def on_new_client(clientsocket, addr):
     # identify request type
     while True:
         req = clientsocket.recv(buffSize)
-        
+        print("=============== request ============\n"+req)
         if not req:
             print("CLIENT closed socket")
             break
@@ -155,21 +156,19 @@ def on_new_client(clientsocket, addr):
             print(new_firstLine)
             new_req = req.replace(firstLine, new_firstLine)
             dummy, tp = getFromServer(serversocket, clientsocket, new_req, tp, True)
+            print("=========== Man new Req ===============\n"+new_req)
 
         elif isVid(req):
-            while True:
-                if len(tp[4]) == 0:
-                    tp[4] = bbrr[:]
-                firstLine = req.split('\n')[0]
-                r = re.search('^GET /vod/(.+?)Seg', firstLine)
-                prev_bit = str(r.group(1))
-                new_header = firstLine.replace(str(prev_bit), str(tp[3]))
-                print(new_header)
-                new_req = req.replace(str(firstLine), str(new_header))
-                dummy,tp = getFromServer(serversocket, clientsocket, new_req, tp, True)
-                req = clientsocket.recv(buffSize)
-                if not req:
-                    break
+            if len(tp[4]) == 0:
+                tp[4] = bbrr[:]
+            firstLine = req.split('\n')[0]
+            r = re.search('^GET /vod/(.+?)Seg', firstLine)
+            prev_bit = str(r.group(1))
+            new_header = firstLine.replace(str(prev_bit), str(tp[3]))
+            print(new_header)
+            new_req = req.replace(str(firstLine), str(new_header))
+            dummy,tp = getFromServer(serversocket, clientsocket, new_req, tp, True)
+            print("=============== new req VIDEO ==============\n" + new_req)
 
         else:
             dummy,tp = getFromServer(serversocket, clientsocket, req, tp ,True)
