@@ -76,7 +76,6 @@ def getFromServer(serversocket, clientsocket, req, tp, send):
     fileSize = int((res.split("Content-Length: ")[1]).split("\n")[0])
     idx = res.find("\r\n\r\n") + 4
     res_file = res[idx:]
-    print("============ response =============\n" + res[:idx])
     count = len(res) - idx
     diff = fileSize - count
     buff = buffSize if diff > buffSize else diff
@@ -121,7 +120,7 @@ def on_new_client(clientsocket, addr):
     # globals for connections
     global log
 
-    br = 0
+    br = 10
     bitrates = []
     tput = 0
     tput_emwa = 0
@@ -153,6 +152,7 @@ def on_new_client(clientsocket, addr):
             firstLine = req.split('\n')[0]
             parsed = firstLine.split(".f4m")
             new_firstLine = parsed[0] + "_nolist.f4m" + parsed[1]
+            print(new_firstLine)
             new_req = req.replace(firstLine, new_firstLine)
             dummy, tp = getFromServer(serversocket, clientsocket, new_req, tp, True)
 
@@ -161,8 +161,8 @@ def on_new_client(clientsocket, addr):
             r = re.search('^GET /vod/(.+?)Seg', firstLine)
             prev_bit = str(r.group(1))
             new_header = firstLine.replace(str(prev_bit), str(tp[3]))
+            print(new_header)
             new_req = req.replace(str(firstLine), str(new_header))
-            print("=============== new req ===================\n" + new_req)
             dummy,tp = getFromServer(serversocket, clientsocket, new_req, tp, True)
 
         else:
