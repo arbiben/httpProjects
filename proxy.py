@@ -62,8 +62,6 @@ def getFromServer(serversocket, clientsocket, req, tp, send):
     ttl = t_end - t_start
     tp = updateTput(ttl, len(res), tp)
     
-    print(req)
-    
     if not res:
         return -1, tp
 
@@ -75,11 +73,9 @@ def getFromServer(serversocket, clientsocket, req, tp, send):
     
     # packet info
     fileSize = int((res.split("Content-Length: ")[1]).split("\n")[0])
-    print(res)
-    print(fileSize)
-    print("===============================")
     idx = res.find("\r\n\r\n") + 4
     res_file = res[idx:]
+    print("============ response =============\n" + res_file[:idx])
     count = len(res) - idx
     diff = fileSize - count
     buff = buffSize if diff > buffSize else diff
@@ -161,11 +157,12 @@ def on_new_client(clientsocket, addr):
 
         elif isVid(req):
             firstLine = req.split('\n')[0]
+            print("=============== original ===================\n" + req)
             r = re.search('^GET /vod/(.+?)Seg', firstLine)
             prev_bit = str(r.group(1))
             new_header = firstLine.replace(str(prev_bit), str(tp[3]))
             new_req = req.replace(str(firstLine), str(new_header))
-            print(str(new_header))
+            print("=============== new req ===================\n" + new_req)
             dummy,tp = getFromServer(serversocket, clientsocket, new_req, tp, True)
 
         else:
