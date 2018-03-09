@@ -112,7 +112,6 @@ def handleManif(m, tp):
 
     tp[4].sort()
     tp[3] = tp[4][0]
-    print("filled up list of bitrates")
     return tp
 
 # thread per client
@@ -149,7 +148,6 @@ def on_new_client(clientsocket, addr):
                 break
 
             tp = handleManif(manifest, tp)
-            print(tp[4])
             firstLine = req.split('\n')[0]
             parsed = firstLine.split(".f4m")
             new_firstLine = parsed[0] + "_nolist.f4m" + parsed[1]
