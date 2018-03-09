@@ -108,13 +108,13 @@ def getFromServer(serversocket, clientsocket, req, tp, send):
 #tp = [tput, tput_emwa, tput_count, br, bitrates]
 # extract information from manifest file
 def handleManif(m, tp):
-    print(m)
     manif = xmlReader.fromstring(m)
     for child in manif:
         if 'bitrate' in child.attrib:
             tp[4].append(int(child.attrib['bitrate']))
 
     tp[4].sort()
+    print("filled up list of bitrates")
     return tp
 
 # thread per client
@@ -151,6 +151,7 @@ def on_new_client(clientsocket, addr):
                 break
 
             tp = handleManif(manifest, tp)
+            print(tp[4])
             firstLine = req.split('\n')[0]
             parsed = firstLine.split(".f4m")
             new_firstLine = parsed[0] + "_nolist.f4m" + parsed[1]
