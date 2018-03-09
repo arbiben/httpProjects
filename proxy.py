@@ -70,7 +70,7 @@ def getFromServer(serversocket, clientsocket, req, tp, send):
 
     header = re.search("^GET (.+?) HTTP", req.split("\n")[0])
     chunckname = str(header.group(1))
-    log_stmnt = [str(t_end), str(ttl), str(tp[0]), str(tp[1]), str(tp[3]), server_ip, chunckname)))
+    log_stmnt = [str(t_end), str(ttl), str(tp[0]), str(tp[1]), str(tp[3]), server_ip, chunckname]
     print(' '.join(log_stmnt))
     log.write(' '.join(log_stmnt))
     
