@@ -151,7 +151,6 @@ def on_new_client(clientsocket, addr):
             firstLine = req.split('\n')[0]
             parsed = firstLine.split(".f4m")
             new_firstLine = parsed[0] + "_nolist.f4m" + parsed[1]
-            print(new_firstLine)
             new_req = req.replace(firstLine, new_firstLine)
             dummy, tp = getFromServer(serversocket, clientsocket, new_req, tp, True)
 
