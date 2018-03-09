@@ -161,6 +161,7 @@ def on_new_client(clientsocket, addr):
         elif isVid(req):
             if len(tp[4]) == 0:
                 tp[4] = bbrr[:]
+                tp[3] = tp[4][0]
             firstLine = req.split('\n')[0]
             r = re.search('^GET /vod/(.+?)Seg', firstLine)
             prev_bit = str(r.group(1))
@@ -168,7 +169,7 @@ def on_new_client(clientsocket, addr):
             print(new_header)
             new_req = req.replace(str(firstLine), str(new_header))
             dummy,tp = getFromServer(serversocket, clientsocket, new_req, tp, True)
-            print("=============== new req VIDEO ==============\n" + new_req)
+            print("=============== new req VIDEO ==============\n" +)
 
         else:
             dummy,tp = getFromServer(serversocket, clientsocket, req, tp ,True)
