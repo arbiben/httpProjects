@@ -219,8 +219,10 @@ def handleManif(m):
 
 
 def getBitrate(throughput):
+    print("T = " + str(throughput))
     prev = bitrates[0]
     for bit in bitrates:
+        print(bit)
         if bit > throughput:
             return prev
         prev = bit
