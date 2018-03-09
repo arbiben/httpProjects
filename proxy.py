@@ -58,12 +58,13 @@ def updateTput(t_end, ttl, b, tp):
 #tp = [tput, tput_emwa, tput_count, bitrate]
 # sends GET request and returns respons if needed
 def getFromServer(serversocket, clientsocket, req, tp, send):
+    print("client>>>>>>>>>>>> \n " + req)
     t_start = time.time()
     serversocket.send(req)
     res = serversocket.recv(buffSize)
     t_end = time.time()
     ttl = t_end - t_start
-
+    print("server>>>>>>>>>>>> \n " + res)
     tp = updateTput(t_end, ttl, len(res), tp)
     if not res:
         return -1, tp
@@ -87,6 +88,7 @@ def getFromServer(serversocket, clientsocket, req, tp, send):
 
     while diff > 0:
         res = serversocket.recv(buff)
+        print("server>>>>>>>>>>>> \n " + res)
         if not res:
             return -1, tp
 
@@ -96,6 +98,7 @@ def getFromServer(serversocket, clientsocket, req, tp, send):
             res_file += res
 
         count += len(res)
+        diff = fileSize - count
         buff = buffSize if diff < buffSize else diff
 
     # if the packet needs to be returned
@@ -112,15 +115,14 @@ def handleManif(m):
             bitrates.append(int(child.attrib['bitrate']))
 
     bitrates.sort()
+
 # thread per client
 def on_new_client(clientsocket, addr):
     # globals for connections
     global log
     global bitrates
     global bitrate
-    global tp 
     
-    bitrate = 0 
     tput = 0
     tput_emwa = 0
     tput_count = 0
@@ -143,7 +145,7 @@ def on_new_client(clientsocket, addr):
         if isMan(req):
             print("in man")
             manifest, tp = getFromServer(serversocket, clientsocket, req, tp, False)
-            print(req+"\n=========================================================")
+            
             if manifest == -1:
                 print("no response from server")
                 break
