@@ -78,7 +78,7 @@ def getFromServer(serversocket, clientsocket, req, tp, send):
     # packet info
     fileSize = int((res.split("Content-Length: ")[1]).split("\n")[0])
     idx = res.find("\r\n\r\n") + 4
-    res_file = res[:idx]
+    res_file = res[idx:]
     count = len(res) - idx
     diff = fileSize - count
     buff = buffSize if diff < buffSize else diff
@@ -109,8 +109,7 @@ def getFromServer(serversocket, clientsocket, req, tp, send):
 
 # extract information from manifest file
 def handleManif(m):
-    idx = m.find("\r\n\r\n")+4
-    print(m[idx:])
+    print(m)
     manif = xmlReader.fromstring(m[idx:])
     for child in manif:
         if 'bitrate' in child.attrib:
