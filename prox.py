@@ -67,17 +67,21 @@ def on_new_client(clientsocket, addr):
             req_name = packet.group(1)
             # if the GET request is for the manifest file       
             if re.search('.f4m', req_name):
-                if sendMan(req, serversocket, clientsocket, throughput) == -1:
+                flag, throughput = sendMan(req, serversocket, clientsocket, throughput)
+                if flag:
                     print("closed in \"not\" SERVER clause ")
                     break
+
             # if the GET request is for a video segment file
             elif re.search('Seg', req_name):
-                if sendVid(req, serversocket, clientsocket, throughput) == -1:
+                flag, throughput = sendVid(req, serversocket, clientsocket, throughput)
+                if flag:
                     print("closed in \"not\" SERVER clause ")
                     break
             # if the GET request is for any other file
             else:
-                if sendOther(req, serversocket, clientsocket, throughput) == -1:
+                flag, throughput = sendOther(req, serversocket, clientsocket, throughput)
+                if flag:
                     print("closed in \"not\" SERVER clause ")
                     break
         else: 
@@ -91,7 +95,6 @@ def on_new_client(clientsocket, addr):
 # get the manifest file and send the nolist manifest
 def sendMan(req, serversocket, clientsocket, throughput):
     buff = buffSize
-    print("========begin=========\n" + req + "\n============end============")
     t_start = time.time()
     serversocket.send(req)
     response = serversocket.recv(buff)
@@ -102,6 +105,10 @@ def sendMan(req, serversocket, clientsocket, throughput):
 
     #contains the manifest file we need
     manif = getResponse(response, serversocket, clientsocket, throughput, False)
+    
+    if not manif:
+        return True
+    
     handleManif(manif)
 
     #adjust request and resend to serever and response to client
@@ -113,10 +120,15 @@ def sendMan(req, serversocket, clientsocket, throughput):
     response = serversocket.recv(buff)
     ttl = time.time()-t_start
 
+    if not response:
+        return [True, throughput]
+
     # gather info on throughput
     throughput = updateThroughput(ttl, len(response), throughput)
 
     getResponse(response, serversocket, clientsocket, throughput, True)
+
+    return [False, throughput]
 
 # if the response is a Video segment
 def sendVid(req, serversocket, clientsocket, throughput):
@@ -142,11 +154,11 @@ def sendVid(req, serversocket, clientsocket, throughput):
     throughput = updateThroughput(ttl, len(response), throughput)
 
     if not response:
-        return -1
+        return [True, throughput]
 
     # call method to handle the transfer of the packets
     getResponse(response, serversocket, clientsocket, throughput, True)
-    return 0
+    return [False, throughput]
 
 # if the response is not manifest it just sends it to the client
 def sendOther(req, serversocket, clientsocket, throughput):
@@ -160,11 +172,12 @@ def sendOther(req, serversocket, clientsocket, throughput):
     throughput = updateThroughput(ttl, len(response), throughput)
 
     if not response:
-        return -1
+        return [True, throughput]
 
     # call method to handle the transfer of the packets
     getResponse(response, serversocket, clientsocket, throughput, True)
-    return 0
+    
+    return [False, throughput]
 
 # gathers the response in one file and if needed - saves it for use
 # otherwise, sende it to client
