@@ -113,7 +113,7 @@ def handleManif(m, tp):
 
     tp[4].sort()
     tp[3] = tp[4][0]
-    print(" bitperrate is ----- -- - -- -- - - -- " +tp[3])
+    print(" bitperrate is ----- -- - -- -- - - -- " +str(tp[3]))
     return tp
 
 # thread per client
