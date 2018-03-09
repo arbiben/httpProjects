@@ -231,8 +231,9 @@ def getBitrate(throughput):
 
 
 def updateThroughput(ttl, b, t_curr):
+    print(ttl)
     t_new = (0.008*b)/ttl
-    print((alpha * t_new) + t_curr*(1-alpha))
+    # print((alpha * t_new) + t_curr*(1-alpha))
     return((alpha * t_new) + t_curr*(1-alpha))
     # this is in kilo bits
     # 4000 Kbits = 0.5 Mbyte
