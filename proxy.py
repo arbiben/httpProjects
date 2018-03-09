@@ -33,9 +33,6 @@ def isVid(req):
     firstLine = req.split('\n')[0]
     return firstLine.find("Seg") != -1
 
-bitrates = []
-bitrate = 0
-
 #tp = [tput, tput_emwa, tput_count, bitrate]
 # update throughput and bitrate
 def updateTput(t_end, ttl, b, tp):
@@ -108,27 +105,29 @@ def getFromServer(serversocket, clientsocket, req, tp, send):
     # otherwise
     return 0, tp
 
+#tp = [tput, tput_emwa, tput_count, br, bitrates]
 # extract information from manifest file
-def handleManif(m):
+def handleManif(m, tp):
     print(m)
     manif = xmlReader.fromstring(m)
     for child in manif:
         if 'bitrate' in child.attrib:
-            bitrates.append(int(child.attrib['bitrate']))
+            tp[4].append(int(child.attrib['bitrate']))
 
-    bitrates.sort()
+    tp[4].sort()
+    return tp
 
 # thread per client
 def on_new_client(clientsocket, addr):
     # globals for connections
     global log
-    global bitrates
-    global bitrate
-    
+
+    br = 0
+    bitrates = []
     tput = 0
     tput_emwa = 0
     tput_count = 0
-    tp = [tput, tput_emwa, tput_count, bitrate]
+    tp = [tput, tput_emwa, tput_count, br, bitrates]
 
     # create connection between proxy and server
     serversocket = socket.socket()
@@ -151,7 +150,7 @@ def on_new_client(clientsocket, addr):
                 print("no response from server")
                 break
 
-            handleManif(manifest)
+            tp = handleManif(manifest, tp)
             firstLine = req.split('\n')[0]
             parsed = firstLine.split(".f4m")
             new_firstLine = parsed[0] + "_nolist.f4m" + parsed[1]
