@@ -131,6 +131,7 @@ def sendVid(req, serversocket, clientsocket, throughput):
     new_header = None
     if bitrate != 0:
         new_header = firstLine.replace(str(old_bitrate), str(bitrate))
+        print(new_header)
         new_req = req.replace(firstLine, new_header)
 
     t_start = time.time()
