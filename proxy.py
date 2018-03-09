@@ -171,11 +171,11 @@ def on_new_client(clientsocket, addr):
             dummy,tp = getFromServer(serversocket, clientsocket, req, tp ,True)
         
         if dummy == -1:
-                print("no response from server")
-                break
+            print("no response from server")
+            break
     
-    serversocket.close()
     clientsocket.close()
+    serversocket.close()
 
 
 while True:
