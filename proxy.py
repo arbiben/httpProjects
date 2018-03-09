@@ -58,14 +58,15 @@ def updateTput(t_end, ttl, b, tp):
 #tp = [tput, tput_emwa, tput_count, bitrate]
 # sends GET request and returns respons if needed
 def getFromServer(serversocket, clientsocket, req, tp, send):
-    # print("client>>>>>>>>>>>> \n " + req)
+    print("client>>>>>>>>>>>> \n " + req)
     t_start = time.time()
     serversocket.send(req)
     res = serversocket.recv(buffSize)
     t_end = time.time()
     ttl = t_end - t_start
-    # print("server>>>>>>>>>>>> \n " + res)
+    print("server>>>>>>>>>>>> \n " + res)
     tp = updateTput(t_end, ttl, len(res), tp)
+    
     if not res:
         return -1, tp
 
@@ -144,7 +145,6 @@ def on_new_client(clientsocket, addr):
             break
         
         if isMan(req):
-            print("in man")
             manifest, tp = getFromServer(serversocket, clientsocket, req, tp, False)
             
             if manifest == -1:
@@ -156,7 +156,6 @@ def on_new_client(clientsocket, addr):
             parsed = firstLine.split(".f4m")
             new_firstLine = parsed[0] + "_nolist.f4m" + parsed[1]
             new_req = req.replace(firstLine, new_firstLine)
-            # print(new_req)
             dummy, tp = getFromServer(serversocket, clientsocket, new_req, tp, True)
 
         elif isVid(req):
