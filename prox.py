@@ -1,15 +1,11 @@
 #!/usr/bin/env python
-import sys, socket ,thread, threading, time, select
+import sys, socket ,threading, time, re
 import xml.etree.ElementTree as xmlReader
 
 # <log > <alpha > <listen-port > <fake-ip > <web-server-ip >
 if len(sys.argv) != 5:
     print("<alpha> <port> <fake-ip> <web-server>")
     sys.exit()
-
-# fake ip's
-# 1.0.0.1
-# 2.0.0.1
 
 def main():
     global alpha
@@ -50,7 +46,6 @@ def main():
 # the type of get request (mov, manifest, html...)
 def on_new_client(clientsocket, addr):
     global bitrates
-
     bitrates = []
     throughput = 10
 
@@ -66,16 +61,27 @@ def on_new_client(clientsocket, addr):
         if not req:
             print("CLIENT closed socket")
             break
-                
-        if req.find(".f4m") != -1:
-            if sendMan(req, serversocket, clientsocket, throughput) == -1:
-                print("closed in \"not\" SERVER clause ")
-                break
-
-        else:
-            if sendOther(req, serversocket, clientsocket, throughput) == -1:
-                print("closed in \"not\" SERVER clause ")
-                break
+        
+        packet = re.search("GET /(.*) HTTP", req)
+        if packet:
+            req_name = packet.group(1)
+            # if the GET request is for the manifest file       
+            if re.search('.f4m', req_name):
+                if sendMan(req, serversocket, clientsocket, throughput) == -1:
+                    print("closed in \"not\" SERVER clause ")
+                    break
+            # if the GET request is for a video segment file
+            elif re.search('Seg', req_name):
+                if sendVid(req, serversocket, clientsocket, throughput) == -1:
+                    print("closed in \"not\" SERVER clause ")
+                    break
+            # if the GET request is for any other file
+            else:
+                if sendOther(req, serversocket, clientsocket, throughput) == -1:
+                    print("closed in \"not\" SERVER clause ")
+                    break
+        else: 
+            break
 
     print("closed sockets")
     clientsocket.close()
@@ -111,7 +117,55 @@ def sendMan(req, serversocket, clientsocket, throughput):
     throughput = updateThroughput(ttl, len(response), throughput)
 
     getResponse(response, serversocket, clientsocket, throughput, True)
+
+# if the response is a Video segment
+def sendVid(req, serversocket, clientsocket, throughput):
     
+    buff = buffSize
+    bitrate = getBitrate(throughput)
+    
+    firstLine = req.split('\n')[0]
+    getReq = re.search('^GET /vod/(.+?)Seg', firstLine)
+
+    old_bitrate = getReq.group(1)
+    new_header = None
+    if bitrate != 0:
+        new_header = firstLine.replace(str(old_bitrate), str(bitrate))
+        new_req = req.replace(firstLine, new_header)
+
+    t_start = time.time()
+    serversocket.send(new_req)        # send to server
+    response = serversocket.recv(buff)  # from server
+    ttl = time.time()-t_start
+    # gather info on throughput
+    throughput = updateThroughput(ttl, len(response), throughput)
+
+    if not response:
+        return -1
+
+    # call method to handle the transfer of the packets
+    getResponse(response, serversocket, clientsocket, throughput, True)
+    return 0
+
+# if the response is not manifest it just sends it to the client
+def sendOther(req, serversocket, clientsocket, throughput):
+    print("========================\n" + req +
+          "\n=============================")
+    buff = buffSize
+    t_start = time.time()
+    serversocket.send(req)        # send to server
+    response = serversocket.recv(buff)  # from server
+    ttl = time.time()-t_start
+
+    # gather info on throughput
+    throughput = updateThroughput(ttl, len(response), throughput)
+
+    if not response:
+        return -1
+
+    # call method to handle the transfer of the packets
+    getResponse(response, serversocket, clientsocket, throughput, True)
+    return 0
 
 # gathers the response in one file and if needed - saves it for use
 # otherwise, sende it to client
@@ -155,36 +209,29 @@ def getLength(response):
     
     return [fileSize, idx, count]
 
-# if the response is not manifest it just sends it to the client
-
-def sendOther(req, serversocket, clientsocket, throughput):
-    print("========================\n" + req + "\n=============================")
-    buff = buffSize
-    t_start = time.time()
-    serversocket.send(req)        # send to server
-    response = serversocket.recv(buff)  # from server
-    ttl = time.time()-t_start
-
-    # gather info on throughput
-    throughput = updateThroughput(ttl, len(response), throughput)
-
-    if not response:
-        return -1
-
-    # call method to handle the transfer of the packets
-    getResponse(response, serversocket, clientsocket, throughput, True)
-    return 0
-
 # reads the manifest file and adds bitrates to a list
 def handleManif(m):
     manif = xmlReader.fromstring(m)
     for child in manif:
         if 'bitrate' in child.attrib:
             bitrates.append(int(child.attrib['bitrate']))
+    
+    bitrates.sort()
+
+
+def getBitrate(throughput):
+
+    for bit in bitrates:
+        if throughput <= bit:
+            return bit
+
+    return bitrates[len(bitrates)-1]
+
+    
+
 
 def updateThroughput(ttl, b, t_curr):
-    b = (8*b)/1000.0
-    t_new = b/ttl
+    t_new = (0.008*b)/ttl
     print((alpha * t_new) + t_curr*(1-alpha))
     return((alpha * t_new) + t_curr*(1-alpha))
     # this is in kilo bits
@@ -195,3 +242,4 @@ if __name__ == "__main__":
     main()
   #  /vod/big_buck_bunny.f4m
   # calculate difference between current bitrate and next bitrate
+  # GET /vod/1000Seg3-Frag15 HTTP/1.1
