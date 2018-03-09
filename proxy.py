@@ -71,7 +71,7 @@ def getFromServer(serversocket, clientsocket, req, tp, send):
     header = re.search("^GET (.+?) HTTP", req.split("\n")[0])
     chunckname = str(header.group(1))
     log_stmnt = [str(t_end), str(ttl), str(tp[0]), str(tp[1]), str(tp[3]), server_ip, chunckname]
-    print(' '.join(log_stmnt))
+    #print(' '.join(log_stmnt))
     log.write(' '.join(log_stmnt))
     
     # packet info
@@ -141,7 +141,9 @@ def on_new_client(clientsocket, addr):
             break
         
         if isMan(req):
+            print("in man")
             manifest, tp = getFromServer(serversocket, clientsocket, req, tp, False)
+            print(req+"\n=========================================================")
             if manifest == -1:
                 print("no response from server")
                 break
@@ -150,9 +152,11 @@ def on_new_client(clientsocket, addr):
             parsed = firstLine.split(".f4m")
             new_firstLine = parsed[0] + "_nolist.f4m" + parsed[1]
             new_req = req.replace(firstLine, new_firstLine)
+            print(new_req)
             dummy, tp = getFromServer(serversocket, clientsocket, new_req, tp, True)
 
         elif isVid(req):
+            print("in vid")
             firstLine = req.split('\n')[0]
             r = re.search('^GET /vod/(.+?)Seg', firstLine)
             prev_bit = str(r.group(1))
@@ -161,6 +165,7 @@ def on_new_client(clientsocket, addr):
             dummy,tp = getFromServer(serversocket, clientsocket, new_req, tp, True)
 
         else:
+            print("in other")
             dummy,tp = getFromServer(serversocket, clientsocket, req, tp ,True)
         
         if dummy == -1:
@@ -179,3 +184,5 @@ while True:
     t = threading.Thread(target=on_new_client, args=args)
     t.start()
     t.join()
+
+log.close()
