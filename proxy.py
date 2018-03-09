@@ -157,15 +157,19 @@ def on_new_client(clientsocket, addr):
             dummy, tp = getFromServer(serversocket, clientsocket, new_req, tp, True)
 
         elif isVid(req):
-            if len(tp[4]) == 0:
-                tp[4] = bbrr[:]
-            firstLine = req.split('\n')[0]
-            r = re.search('^GET /vod/(.+?)Seg', firstLine)
-            prev_bit = str(r.group(1))
-            new_header = firstLine.replace(str(prev_bit), str(tp[3]))
-            print(new_header)
-            new_req = req.replace(str(firstLine), str(new_header))
-            dummy,tp = getFromServer(serversocket, clientsocket, new_req, tp, True)
+            while True:
+                if len(tp[4]) == 0:
+                    tp[4] = bbrr[:]
+                firstLine = req.split('\n')[0]
+                r = re.search('^GET /vod/(.+?)Seg', firstLine)
+                prev_bit = str(r.group(1))
+                new_header = firstLine.replace(str(prev_bit), str(tp[3]))
+                print(new_header)
+                new_req = req.replace(str(firstLine), str(new_header))
+                dummy,tp = getFromServer(serversocket, clientsocket, new_req, tp, True)
+                req = clientsocket.recv(buffSize)
+                if not req:
+                    break
 
         else:
             dummy,tp = getFromServer(serversocket, clientsocket, req, tp ,True)
