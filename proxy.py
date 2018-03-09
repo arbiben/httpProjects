@@ -49,7 +49,7 @@ def updateTput(ttl, b, tp):
                 tp[3] = prev
             prev = bit
         tp[3] = prev
-    
+    print(tp[3])
     return tp
         
 #tp = [tput, tput_emwa, tput_count, bitrate]
@@ -113,7 +113,6 @@ def handleManif(m, tp):
 
     tp[4].sort()
     tp[3] = tp[4][0]
-    print(" bitperrate is ----- -- - -- -- - - -- " +str(tp[3]))
     return tp
 
 # thread per client
