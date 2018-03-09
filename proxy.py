@@ -58,13 +58,13 @@ def updateTput(t_end, ttl, b, tp):
 #tp = [tput, tput_emwa, tput_count, bitrate]
 # sends GET request and returns respons if needed
 def getFromServer(serversocket, clientsocket, req, tp, send):
-    print("client>>>>>>>>>>>> \n " + req)
+    # print("client>>>>>>>>>>>> \n " + req)
     t_start = time.time()
     serversocket.send(req)
     res = serversocket.recv(buffSize)
     t_end = time.time()
     ttl = t_end - t_start
-    print("server>>>>>>>>>>>> \n " + res)
+    # print("server>>>>>>>>>>>> \n " + res)
     tp = updateTput(t_end, ttl, len(res), tp)
     if not res:
         return -1, tp
@@ -88,7 +88,7 @@ def getFromServer(serversocket, clientsocket, req, tp, send):
 
     while diff > 0:
         res = serversocket.recv(buff)
-        print("server>>>>>>>>>>>> \n " + res)
+        # print("server>>>>>>>>>>>> \n " + res)
         if not res:
             return -1, tp
 
@@ -109,6 +109,7 @@ def getFromServer(serversocket, clientsocket, req, tp, send):
 
 # extract information from manifest file
 def handleManif(m):
+    print(str(m))
     manif = xmlReader.fromstring(m)
     for child in manif:
         if 'bitrate' in child.attrib:
@@ -149,12 +150,13 @@ def on_new_client(clientsocket, addr):
             if manifest == -1:
                 print("no response from server")
                 break
+
             handleManif(manifest)
             firstLine = req.split('\n')[0]
             parsed = firstLine.split(".f4m")
             new_firstLine = parsed[0] + "_nolist.f4m" + parsed[1]
             new_req = req.replace(firstLine, new_firstLine)
-            print(new_req)
+            # print(new_req)
             dummy, tp = getFromServer(serversocket, clientsocket, new_req, tp, True)
 
         elif isVid(req):
