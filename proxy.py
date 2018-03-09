@@ -110,6 +110,8 @@ def getFromServer(serversocket, clientsocket, req, tp, send):
 # extract information from manifest file
 def handleManif(m):
     print(str(m))
+    idx = m.find("\r\n\r\n")
+    print(idx:)
     manif = xmlReader.fromstring(m)
     for child in manif:
         if 'bitrate' in child.attrib:
