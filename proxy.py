@@ -114,6 +114,7 @@ def handleManif(m, tp):
             tp[4].append(int(child.attrib['bitrate']))
 
     tp[4].sort()
+    tp[3] = tp[4][0]
     print("filled up list of bitrates")
     return tp
 
@@ -160,7 +161,6 @@ def on_new_client(clientsocket, addr):
 
         elif isVid(req):
             print("in vid")
-            print(tp[4])
             firstLine = req.split('\n')[0]
             r = re.search('^GET /vod/(.+?)Seg', firstLine)
             prev_bit = str(r.group(1))
