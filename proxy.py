@@ -169,7 +169,7 @@ def on_new_client(clientsocket, addr):
             print(new_header)
             new_req = req.replace(str(firstLine), str(new_header))
             dummy,tp = getFromServer(serversocket, clientsocket, new_req, tp, True)
-            print("=============== new req VIDEO ==============\n" +)
+            print("=============== new req VIDEO ==============\n" +new_req)
 
         else:
             dummy,tp = getFromServer(serversocket, clientsocket, req, tp ,True)
