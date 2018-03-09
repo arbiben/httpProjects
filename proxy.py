@@ -40,14 +40,11 @@ def updateTput(ttl, b, tp):
     tp[0] = (alpha * t_new) + (1 - alpha) * tp[0]
     tp[1] = (tp[1]*tp[2] + tp[0])/(1+tp[2])
     tp[2] += 1
-    print("tput is: "+str(tp[0]))
 
     if len(tp[4]) > 0:
         maxBit = tp[1]/1.5
-        print("max is - "+ str(maxBit))
         prev = tp[4][0]
         for bit in tp[4]:
-            print(bit)
             if bit > maxBit:
                 tp[3] = prev
             prev = bit
