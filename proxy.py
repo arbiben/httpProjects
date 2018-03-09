@@ -50,7 +50,7 @@ def updateTput(ttl, b, tp):
             prev = bit
         tp[3] = prev
     else:
-        tp[3] = tp[4][0]
+        tp[3] = 10
     return tp
         
 #tp = [tput, tput_emwa, tput_count, bitrate]
