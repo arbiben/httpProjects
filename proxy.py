@@ -35,15 +35,16 @@ def isVid(req):
 
 #tp = [tput, tput_emwa, tput_count, br, bitrates]
 # update throughput and bitrate
-def updateTput(t_end, ttl, b, tp):
+def updateTput(ttl, b, tp):
     t_new = (b*0.008)/ttl
     tp[0] = (alpha * t_new) + (1 - alpha) * tp[0]
     tp[1] = (tp[1]*tp[2] + tp[0])/(1+tp[2])
     tp[2] += 1
-    
-    if len(tp[4]) != 0:
+    print("tput is: "+tp[0])
+
+    if len(tp[4]) > 0:
         maxBit = tp[1]/1.5
-        
+        print("max is - "+ str(maxBit))
         prev = tp[4][0]
         for bit in tp[4]:
             if bit > maxBit:
@@ -55,14 +56,12 @@ def updateTput(t_end, ttl, b, tp):
 #tp = [tput, tput_emwa, tput_count, bitrate]
 # sends GET request and returns respons if needed
 def getFromServer(serversocket, clientsocket, req, tp, send):
-    # print("client>>>>>>>>>>>> \n " + req)
     t_start = time.time()
     serversocket.send(req)
     res = serversocket.recv(buffSize)
     t_end = time.time()
     ttl = t_end - t_start
-    # print("server>>>>>>>>>>>> \n " + res)
-    tp = updateTput(t_end, ttl, len(res), tp)
+    tp = updateTput(ttl, len(res), tp)
     
     if not res:
         return -1, tp
@@ -160,7 +159,6 @@ def on_new_client(clientsocket, addr):
             dummy, tp = getFromServer(serversocket, clientsocket, new_req, tp, True)
 
         elif isVid(req):
-            print("in vid")
             firstLine = req.split('\n')[0]
             r = re.search('^GET /vod/(.+?)Seg', firstLine)
             prev_bit = str(r.group(1))
@@ -169,7 +167,6 @@ def on_new_client(clientsocket, addr):
             dummy,tp = getFromServer(serversocket, clientsocket, new_req, tp, True)
 
         else:
-            print("in other")
             dummy,tp = getFromServer(serversocket, clientsocket, req, tp ,True)
         
         if dummy == -1:
