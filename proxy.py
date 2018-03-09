@@ -70,7 +70,7 @@ def getFromServer(serversocket, clientsocket, req, tp, send):
     chunckname = str(header.group(1))
     log_stmnt = [str(t_end), str(ttl), str(tp[0]), str(tp[1]), str(tp[3]), server_ip, chunckname]
     #print(' '.join(log_stmnt))
-    log.write(' '.join(log_stmnt))
+    log.write(' '.join(log_stmnt)+"\n")
     
     # packet info
     fileSize = int((res.split("Content-Length: ")[1]).split("\n")[0])
@@ -85,7 +85,6 @@ def getFromServer(serversocket, clientsocket, req, tp, send):
 
     while diff > 0:
         res = serversocket.recv(buff)
-        # print("server>>>>>>>>>>>> \n " + res)
         if not res:
             return -1, tp
 
@@ -164,6 +163,7 @@ def on_new_client(clientsocket, addr):
             prev_bit = str(r.group(1))
             new_header = firstLine.replace(str(prev_bit), str(tp[3]))
             new_req = req.replace(str(firstLine), str(new_header))
+            print(str(new_header))
             dummy,tp = getFromServer(serversocket, clientsocket, new_req, tp, True)
 
         else:
